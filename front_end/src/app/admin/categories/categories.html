@@ -1,0 +1,23 @@
+<div class="row">
+    <div [ngClass]="showAdd? 'col-8' : 'col-12'">
+        <table class="table table-bordered table-dark text-center mt-5">
+        <thead>
+                <tr>
+                <th scope="col">#</th>
+                <th scope="col">NOM CATEGORIE</th>
+                <th scope="col" colspan="2">ACTION</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let cate of categoryList; let index = index">
+                    <th scope="row">{{index+1}}</th>
+                    <td> {{cate.categoryName}} </td>
+                    <td><a class="btn btn-primary">Modifier</a></td>
+                    <td><a class="btn btn-danger">Supprimer</a></td>
+                </tr>
+                
+            </tbody>
+        </table>
+    </div>
+    
+</div>
