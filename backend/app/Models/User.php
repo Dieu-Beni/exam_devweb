@@ -6,27 +6,52 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use App\Models\Commande;
+use App\Models\Panier;
+use App\Models\Notification;
+
+
+
+
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens,HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'nom',
+        'prenom',
         'email',
         'password',
+        'adresse',
     ];
+
+    public function commandes()
+    {
+        return $this->hasMany(Commande::class, 'id_user');
+    }
+
+    public function panier()
+    {
+        return $this->hasOne(Panier::class, 'id_user');
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class, 'id_user');
+    }
 
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -36,7 +61,7 @@ class User extends Authenticatable
     /**
      * Get the attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<int, string>
      */
     protected function casts(): array
     {
