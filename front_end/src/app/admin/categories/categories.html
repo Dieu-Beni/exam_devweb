@@ -1,23 +1,68 @@
 <div class="row">
     <div [ngClass]="showAdd? 'col-8' : 'col-12'">
-        <table class="table table-bordered table-dark text-center mt-5">
-        <thead>
-                <tr>
-                <th scope="col">#</th>
-                <th scope="col">NOM CATEGORIE</th>
-                <th scope="col" colspan="2">ACTION</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let cate of categoryList; let index = index">
-                    <th scope="row">{{index+1}}</th>
-                    <td> {{cate.categoryName}} </td>
-                    <td><a class="btn btn-primary">Modifier</a></td>
-                    <td><a class="btn btn-danger">Supprimer</a></td>
-                </tr>
-                
-            </tbody>
-        </table>
+        <div class="card">
+            <div class="card-header bg-primary">
+                <div class="row">
+                    <div class="col-6 text-center">
+                        <h1>Liste des Categories</h1>
+                    </div>
+                    <div class="col-6 text-end">
+                        <button class="btn btn-sm btn-success" (click)="showPanel()">Ajouter</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <table class="table table-bordered table-dark text-center">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">NOM CATEGORIE</th>
+                                <th scope="col" colspan="2">ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let cate of categoryList; let index = index">
+                                <th scope="row">{{index+1}}</th>
+                                <td> {{cate.nom}} </td>
+                                <td><a class="btn btn-primary" (click)="onEdit(cate)">Modifier</a></td>
+                                <td><a class="btn btn-danger" (click)="onDelete(cate)">Supprimer</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-    
+    <div class="col-4" *ngIf="showAdd">
+        <div class="card">
+            <div class="card-header bg-primary">
+                <div class="row">
+                    <div class="col-6">
+                        Nouvelle Categorie
+                    </div>
+                    <div class="col-6 text-end">
+                        <button class="btn btn-sm btn-success" (click)="closePanel()">Fermer</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <label for="sku">Nom Categorie</label>
+                        <input type="text" [(ngModel)]="categoryOjt.nom" class="form-control">
+                    </div>
+                </div>
+                <div class="row pt-2">
+                    <div class="col-6 text-center">
+                        <button class="btn btn-success" (click)="clear()">Netoyer</button>
+                    </div>
+                    <div class="col-6 text-center">
+                        <button class="btn btn-success" *ngIf="categoryOjt.id === 0 || categoryOjt.id === ''" (click)="onSave()">Creer la categorie</button>
+                        <button class="btn btn-primary" *ngIf="categoryOjt.id !== 0" (click)="onUpdate()">Modifier la categorie</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

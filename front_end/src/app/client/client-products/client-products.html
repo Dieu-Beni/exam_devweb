@@ -3,7 +3,7 @@
         <div class="container py-5">
             <h1 class="mb-4">Nos Produits</h1>
             <div class="row g-4">
-                <div class="col-md-4 col-lg-4 col-xl-3" *ngFor="let product of getPaginatedItems()">
+                <div class="col-md-4 col-lg-6 col-xl-3" *ngFor="let product of getPaginatedItems()">
                     <div class="rounded position-relative fruite-item" >
                         <div class="fruite-img">
                             <img [src]="product.productImageUrl" class="img-fluid w-100 rounded-top" alt="">

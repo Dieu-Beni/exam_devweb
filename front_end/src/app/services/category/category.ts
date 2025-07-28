@@ -11,18 +11,18 @@ export class Category {
     }
    
     getAllCategories(){
-      return this.http.get(Constant.API_END_POINT + Constant.METODS.GET_ALL_CATEGORIES);
+      return this.http.get(Constant.API_END_POINT + Constant.METODS.CATEGORY);
     }
   
     saveCategory(category: any){
-      return this.http.post(Constant.API_END_POINT + Constant.METODS.CREATE_CATEGORY, category);
+      return this.http.post(Constant.API_END_POINT + Constant.METODS.CATEGORY, category);
     }
   
     updateCategory(category: any){
-      return this.http.post(Constant.API_END_POINT + Constant.METODS.UPDATE_CATEGORY, category);
+      return this.http.put(Constant.API_END_POINT + Constant.METODS.CATEGORY + category.id, category);
     }
   
-    deleteCategory(id: any){
-      return this.http.get(Constant.API_END_POINT + Constant.METODS.DELETE_CATEGORY + id);
+    deleteCategory(id: number){
+      return this.http.delete(Constant.API_END_POINT + Constant.METODS.CATEGORY + id);
     }
 }

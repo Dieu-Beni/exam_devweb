@@ -1,0 +1,46 @@
+<div class="parent">
+    <div class="content">
+        <form [formGroup]="userForm" (ngSubmit)="onRegister()" action="">
+            <h2>Inscription</h2>
+            <div class="input-box">
+                <input type="text" formControlName="nom" name="nom" placeholder="Nom" required />
+                <i class="ri-user-fill"></i>
+                <div *ngIf="userForm.get('nom')?.invalid && userForm.get('nom')?.touched" class="text-danger">
+                Le nom est requis.
+                </div>
+            </div>
+            <div class="input-box">
+                <input type="text" formControlName="prenom" name="prenom" placeholder="Prenom" required />
+                <i class="ri-user-fill"></i>
+                <div *ngIf="userForm.get('prenom')?.invalid && userForm.get('prenom')?.touched" class="text-danger">
+                Le prenom est requis.
+                </div>
+            </div>
+            <div class="input-box">
+                <input type="text" formControlName="email"  name="email" placeholder="Email" required />
+                <i class="ri-user-fill"></i>
+                <div *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched" class="text-danger">
+                L'email est requis.
+                </div>
+            </div>
+            <div class="input-box">
+                <input type="password" formControlName="password"  name="password" placeholder="Mot de Passe" required autocomplete="new-password" />
+                <i class="ri-eye-off-fill toggle-password" id="togglePassword"></i>
+                <div *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched" class="text-danger">
+                Le mot de passe est requis.
+                </div>
+            </div>
+            <div class="input-box">
+                <input type="text" formControlName="adresse" name="adress" placeholder="Adresse" required />
+                <i class="ri-user-fill"></i>
+                <div *ngIf="userForm.get('adresse')?.invalid && userForm.get('adresse')?.touched" class="text-danger">
+                L'address est requis.
+                </div>
+            </div>
+            <button type="submit" class="btnn">S'inscrire</button>
+             <div class="button">
+                <a href="#" routerLink="/login">Deja un compte? Se Connecter</a>
+            </div>
+        </form>
+    </div>
+</div>
