@@ -24,17 +24,42 @@ class ProduitController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'nom' => 'required|string',
-            'description' => 'nullable|string',
-            'prix' => 'required|numeric',
-            'stock' => 'required|integer',
-            'image_url' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'id_categorie' => 'required|exists:categories,id'
-        ]);
+       
+      $validated = $request->validate([
+                'nom' => 'required|string',
+                'description' => 'nullable|string',
+                'prix' => 'required|numeric',
+                'stock' => 'required|integer',
+                'image_url' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:2048',
+                'id_categorie' => 'required|exists:categories,id'
+            ]);
+           
+            // Étape 2 : traitement de l'image
+            if ($request->hasFile('image_url')) {
+                $path = $request->file('image_url')->store('images', 'public');
+                $validated['image_url'] = $path; // On remplace l'image par son chemin
+            }
 
-        $produit = Produit::create($request->all());
-        return response()->json($produit, 201);
+            // 3. Création du produit
+            try {
+                $produit = Produit::create($validated);
+                
+                return response()->json([
+                    'message' => 'Produit créé avec succès',
+                    'produit' => [
+                        ...$produit->toArray(),
+                        'image_url' => $produit->image_url ? asset("storage/{$produit->image_url}") : null,
+                        'categorie' => $produit->categorie
+                    ]
+                ], 201);
+
+            } catch (\Exception $e) {
+                return response()->json([
+                    'message' => 'Erreur lors de la création du produit',
+                    'error' => $e->getMessage()
+                ], 500);
+            }
+
     }
 
     /**
@@ -84,7 +109,7 @@ class ProduitController extends Controller
 
     public function produitsByCategorieId($idCategorie)
     {
-        $produits = Produit::where('id_cat', $idCategorie)->get();
+        $produits = Produit::where('id_categorie', $idCategorie)->get();
         return response()->json($produits);
     }
 }

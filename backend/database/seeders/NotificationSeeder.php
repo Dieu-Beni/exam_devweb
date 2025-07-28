@@ -14,14 +14,12 @@ class NotificationSeeder extends Seeder
             [
                 'id_user' => 1,
                 'message' => 'Votre commande a été expédiée.',
-                'created_at' => now(),
-                'updated_at' => now(),
+                
             ],
             [
                 'id_user' => 2,
                 'message' => 'Nouveau message de support disponible.',
-                'created_at' => now(),
-                'updated_at' => now(),
+                
             ],
         ]);
     }

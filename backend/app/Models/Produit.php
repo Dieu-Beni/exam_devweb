@@ -11,12 +11,12 @@ use App\Models\Article;
 
 class Produit extends Model
 {
-    protected $fillable = ['nom', 'description', 'prix', 'stock','image_url', 'id_cat'];
+    protected $fillable = ['nom', 'description', 'prix', 'stock','image_url', 'id_categorie'];
 
 
     public function categorie()
     {
-        return $this->belongsTo(Categorie::class, 'id_cat');
+        return $this->belongsTo(Categorie::class, 'id_categorie');
     }
 
     public function images()

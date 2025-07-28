@@ -24,7 +24,7 @@ class UserController extends Controller
         'nom' => 'required|string|max:100',
         'prenom' => 'required|string|max:100',
         'email' => 'required|email|unique:users,email',
-        'password' => 'required|string|min:6|confirmed',
+        'password' => 'required|string|min:6',
         'adresse' => 'nullable|string|max:255',
         'role' => 'required|in:admin,client',
         ]);

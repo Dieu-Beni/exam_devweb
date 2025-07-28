@@ -14,7 +14,7 @@ class AuthController extends Controller
             'nom' => 'required|string|max:100',
             'prenom' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:6',
             'adresse' => 'required|string|max:255',
             'role' => 'required|in:admin,client',
         ]);
@@ -45,13 +45,20 @@ class AuthController extends Controller
         if (! $user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['Les informations sont incorrectes.']
-            ]);
+            ],401);
         }
         $token = $user->createToken('auth_token')->plainTextToken;
         return response()->json([
-            'access_token' => $token,
+        'access_token' => $token,
             'token_type' => 'Bearer',
-        ]);
+            'user' => [
+                'id' => $user->id,
+                'nom' => $user->nom,
+                'prenom' => $user->prenom,
+                'email' => $user->email,
+                'role' => $user->role
+            ]
+                ]);
     }
 // Déconnexion
     public function logout(Request $request)
