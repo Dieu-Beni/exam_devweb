@@ -11,7 +11,7 @@ use App\Models\Article;
 
 class Produit extends Model
 {
-    protected $fillable = ['nom', 'description', 'prix', 'stock', 'id_cat'];
+    protected $fillable = ['nom', 'description', 'prix', 'stock','image_url', 'id_cat'];
 
 
     public function categorie()

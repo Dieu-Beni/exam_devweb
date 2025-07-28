@@ -31,6 +31,7 @@ class User extends Authenticatable
         'email',
         'password',
         'adresse',
+        'role',
     ];
 
     public function commandes()
@@ -46,6 +47,11 @@ class User extends Authenticatable
     public function notifications()
     {
         return $this->hasMany(Notification::class, 'id_user');
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
     }
 
     /**

@@ -12,20 +12,22 @@ class ProduitSeeder extends Seeder
     {
         Produit::insert([
             [
-                'nom' => 'Télévision Samsung',
-                'description' => 'Smart TV 50 pouces',
-                'prix' => 250000,
+                'nom' => 'Ordinateur Portable HP',
+                'description' => 'PC portable performant pour le travail et les études.',
+                'prix' => 599.99,
                 'stock' => 10,
-                'id_cat' => 1, // Électronique
+                'id_cat' => 1,
+                'image_url' => 'https://example.com/images/produits/pc-hp.jpg',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'nom' => 'Lait UHT',
-                'description' => 'Brique de lait de 1L',
-                'prix' => 500,
-                'stock' => 200,
-                'id_cat' => 2, // Alimentation
+                'nom' => 'Smartphone Samsung Galaxy',
+                'description' => 'Smartphone haut de gamme avec excellent appareil photo.',
+                'prix' => 799.00,
+                'stock' => 15,
+                'id_cat' => 2,
+                'image_url' => 'https://example.com/images/produits/galaxy.jpg',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

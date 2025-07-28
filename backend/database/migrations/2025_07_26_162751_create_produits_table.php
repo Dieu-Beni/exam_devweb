@@ -17,6 +17,7 @@ return new class extends Migration
         $table->text('description');
         $table->decimal('prix', 10, 2);
         $table->integer('stock');
+        $table->string('image_url')->nullable();
         $table->foreignId('id_cat')->constrained('categories')->onDelete('cascade');
         $table->timestamps();
         });
@@ -27,6 +28,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('produits');
+        Schema::table('produits', function (Blueprint $table){
+        $table->dropColumn('image_url');
+        });
     }
 };

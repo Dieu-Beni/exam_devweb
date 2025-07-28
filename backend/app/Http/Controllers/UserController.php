@@ -25,7 +25,8 @@ class UserController extends Controller
         'prenom' => 'required|string|max:100',
         'email' => 'required|email|unique:users,email',
         'password' => 'required|string|min:6|confirmed',
-        'adresse' => 'nullable|string|max:255'
+        'adresse' => 'nullable|string|max:255',
+        'role' => 'required|in:admin,client',
         ]);
 
         $user = User::create($request->all());

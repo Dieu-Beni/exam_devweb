@@ -15,8 +15,8 @@ class ProduitController extends Controller
      */
     public function index()
     {
-        $produit = Produit::all();
-        return response()->json($produit, 200);
+        $produit = Produit::with('categorie')->get();
+        return response()->json($produit,200);
     }
 
     /**
@@ -29,7 +29,8 @@ class ProduitController extends Controller
             'description' => 'nullable|string',
             'prix' => 'required|numeric',
             'stock' => 'required|integer',
-            'id_cat' => 'required|exists:categories,id'
+            'image_url' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'id_categorie' => 'required|exists:categories,id'
         ]);
 
         $produit = Produit::create($request->all());
@@ -47,6 +48,7 @@ class ProduitController extends Controller
         return response()->json("Produit non trouvé", 404);
     }
 
+    $produit = Produit::with('categorie')->findOrFail($id);
     return response()->json($produit,200);
 
     }

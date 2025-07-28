@@ -16,6 +16,7 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
             'adresse' => 'required|string|max:255',
+            'role' => 'required|in:admin,client',
         ]);
         $user = User::create([
             'nom' => $validated['nom'],
@@ -23,6 +24,7 @@ class AuthController extends Controller
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']),
             'adresse' => $validated['adresse'],
+            'role' => 'client',
         ]);
         $token = $user->createToken('auth_token')->plainTextToken;
         return response()->json([
