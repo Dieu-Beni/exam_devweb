@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Constant } from '../constants/contant';
 
@@ -7,18 +7,25 @@ import { Constant } from '../constants/contant';
 })
 export class Product {
 
+
   constructor(private http: HttpClient){
    
   }
   getAllProducts(){
       return this.http.get(Constant.API_END_POINT + Constant.METODS.GET_ALL_PRODUCTS);
   }
+  getProducts(){
+    return this.http.get(Constant.API_END_POINT + Constant.METODS.PRODUCT);
+  }
+  getAllProductsByCategory(id: number){
+      return this.http.get(Constant.API_END_POINT + Constant.METODS.GET_PRODUCTS_BY_ID_CATEGORY + id);
+  }
   getAllCategories(){
-    return this.http.get(Constant.API_END_POINT + Constant.METODS.GET_ALL_CATEGORIES);
+    return this.http.get(Constant.API_END_POINT + Constant.METODS.CATEGORY);
   }
 
   saveProduct(product: any){
-    return this.http.post(Constant.API_END_POINT + Constant.METODS.CREATE_PRODUCT, product);
+    return this.http.post(Constant.API_END_POINT + Constant.METODS.PRODUCT, product);
   }
 
   updateproduct(product: any){

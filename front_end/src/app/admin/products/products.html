@@ -44,60 +44,69 @@
                 </div>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-6">
-                        <label for="sku">SKU</label>
-                        <input type="text" [(ngModel)]="productsOjt.productSku" class="form-control">
+                <form [formGroup]="productForm" (ngSubmit)="onSave()">
+                    <div class="row" >
+                        <div class="col-6">
+                            <label for="sku">Nom</label>
+                            <input type="text" formControlName="nom" class="form-control">
+                            <div *ngIf="productForm.get('nom')?.invalid && productForm.get('nom')?.touched" class="text-danger">
+                                Le nom est requis.
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <label for="sku">Prix</label>
+                            <input type="number" step="any" formControlName="prix" class="form-control">
+                            <div *ngIf="productForm.get('prix')?.invalid && productForm.get('prix')?.touched" class="text-danger">
+                                Le prix est requis.
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-6">
-                        <label for="sku">Name</label>
-                        <input type="text" [(ngModel)]="productsOjt.productName" class="form-control">
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="sku">Stock</label>
+                            <input type="number" formControlName="stock"class="form-control">
+                            <div *ngIf="productForm.get('stock')?.invalid && productForm.get('stock')?.touched" class="text-danger">
+                                Le stock est requis.
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <label for="sku">Category</label>
+                            <select name="Category" formControlName="id_categorie" class="form-select">
+                                <option *ngFor="let cate of categoryList" [value]="cate.id">{{cate.nom}}</option>
+                            </select>
+                            <div *ngIf="productForm.get('id_categorie')?.invalid && productForm.get('id_categorie')?.touched" class="text-danger">
+                                La categorie est requise.
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="sku">Image</label>
+                            <input type="file" (change)="onFileSelected($event)" class="form-control" accept="image/*">
+                            <div *ngIf="productForm.get('image')?.invalid && productForm.get('image')?.touched" class="text-danger">
+                                L'image est requise.
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-6">
-                        <label for="sku">Short Name</label>
-                        <input type="text" [(ngModel)]="productsOjt.productShortName" class="form-control">
+                    <div class="row">
+                        <div class="col-12">
+                            <label for="sku">Description</label>
+                            <textarea rows="4" type="text" formControlName="description" class="form-control"></textarea>
+                            <div *ngIf="productForm.get('description')?.invalid && productForm.get('description')?.touched" class="text-danger">
+                                La description est requise.
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-6">
-                        <label for="sku">Price</label>
-                        <input type="text" [(ngModel)]="productsOjt.productPrice" class="form-control">
+                    <div class="row pt-2">
+                        <div class="col-6 text-center">
+                            <button class="btn btn-success"(click)="clear()">Netoyer</button>
+                        </div>
+                        <div class="col-6 text-center">
+                            <button class="btn btn-success" *ngIf="productsOjt.id === 0 || productsOjt.id === ''" type="submit">Creer le Produit</button>
+                            <button class="btn btn-primary" *ngIf="productsOjt.id !== 0" (click)="onUpdate()">Modifier le Produit</button>
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-6">
-                        <label for="sku">Category</label>
-                        <select name="Category" [(ngModel)]="productsOjt.categoryId" class="form-select">
-                            <option *ngFor="let cate of categoryList" [value]="cate.categoryId">{{cate.categoryName}}</option>
-                        </select>
-                    </div>
-                    <div class="col-6">
-                        <label for="sku">Delivery Time</label>
-                        <input type="text" [(ngModel)]="productsOjt.deliveryTimeSpan" class="form-control">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <label for="sku">Image url</label>
-                        <input type="text" [(ngModel)]="productsOjt.productImageUrl" class="form-control">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <label for="sku">Description</label>
-                        <textarea rows="4" type="text" [(ngModel)]="productsOjt.productDescription" class="form-control"></textarea>
-                    </div>
-                </div>
-                <div class="row pt-2">
-                    <div class="col-6 text-center">
-                        <button class="btn btn-success"(click)="clear()">Netoyer</button>
-                    </div>
-                    <div class="col-6 text-center">
-                        <button class="btn btn-success" *ngIf="productsOjt.productId === 0 || productsOjt.productId === ''" (click)="onSave()">Creer le Produit</button>
-                        <button class="btn btn-primary" *ngIf="productsOjt.productId !== 0" (click)="onUpdate()">Modifier le Produit</button>
-                    </div>
-                </div>
+                </form>
             </div>
+
         </div>
     </div>
 </div>
