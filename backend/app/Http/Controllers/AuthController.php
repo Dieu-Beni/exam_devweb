@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Panier;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 class AuthController extends Controller
@@ -48,17 +49,37 @@ class AuthController extends Controller
             ],401);
         }
         $token = $user->createToken('auth_token')->plainTextToken;
+
+        $panier_id = null;
+
+        // Si c'est un client, on vérifie le panier
+        if ($user->role === 'client') {
+            $dernierPanier = $user->paniers()->latest()->first();
+
+            if ($dernierPanier && $dernierPanier->statut === 'en cours') {
+                $panier_id = $dernierPanier->id;
+            } else {
+                // Créer un nouveau panier
+                $nouveauPanier = Panier::create([
+                    'user_id' => $user->id,
+                    'statut' => 'en cours',
+                ]);
+                $panier_id = $nouveauPanier->id;
+            }
+        }
+
         return response()->json([
-        'access_token' => $token,
+            'access_token' => $token,
             'token_type' => 'Bearer',
             'user' => [
                 'id' => $user->id,
                 'nom' => $user->nom,
                 'prenom' => $user->prenom,
                 'email' => $user->email,
-                'role' => $user->role
-            ]
-                ]);
+                'role' => $user->role,
+            ],
+            'panier_id' => $panier_id,
+        ]);
     }
 // Déconnexion
     public function logout(Request $request)
