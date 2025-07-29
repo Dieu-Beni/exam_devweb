@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Panier_produit;
+use App\Models\Produit;
+use App\Models\Panier;
 class Panier_produitController extends Controller
 {
     /**
@@ -27,8 +29,25 @@ class Panier_produitController extends Controller
 
         ]);
 
-        $panier_produit = Panier_produit::create($request->all());
-        return response()->json($panier_produit, 201);
+        $panier = Panier::findOrFail($request->id_panier);
+        $produit = Produit::findOrFail($request->id_produit);
+
+        $quantite = $request->quantite;
+        $montant = $produit->prix * $quantite;
+
+        // Ajoute le produit au panier via la relation many-to-many avec pivot
+        $panier->produits()->attach($produit->id, [
+            'quantite' => $quantite,
+            'montant' => $montant,
+        ]);
+
+        return response()->json([
+            'message' => 'Produit ajouté au panier',
+            'panier_id' => $panier->id,
+            'produit_id' => $produit->id,
+            'quantite' => $quantite,
+            'montant' => $montant,
+        ], 201);
     }
 
     /**
