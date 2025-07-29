@@ -52,6 +52,8 @@ Route::apiResource('images', ImageController::class);//->middleware('auth:sanctu
 
 Route::get('categories/{id}/produits', [CategorieController::class, 'produitsParCategorie']);
 
+Route::post('/produits/{id}', [ProduitController::class, 'update']);
+
 // Pour limiter un panier actif par utilisateur, ajoute une route POST spécifique 
 
 // Optionnel : récupérer les produits par catégorie avec juste l'id de la catégorie
