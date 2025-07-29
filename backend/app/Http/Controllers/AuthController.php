@@ -54,14 +54,14 @@ class AuthController extends Controller
 
         // Si c'est un client, on vérifie le panier
         if ($user->role === 'client') {
-            $dernierPanier = $user->panier()->latest()->first();
+            $dernierPanier = $user->paniers()->latest()->first();
 
             if ($dernierPanier && $dernierPanier->statut === 'en cours') {
                 $panier_id = $dernierPanier->id;
             } else {
                 // Créer un nouveau panier
                 $nouveauPanier = Panier::create([
-                    'user_id' => $user->id,
+                    'id_user' => $user->id,
                     'statut' => 'en cours',
                 ]);
                 $panier_id = $nouveauPanier->id;
