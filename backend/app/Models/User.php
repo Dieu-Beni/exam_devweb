@@ -41,7 +41,7 @@ class User extends Authenticatable
 
     public function paniers()
     {
-        return $this->hasMany(Panier::class);
+        return $this->hasMany(Panier::class,'id_user');
     }
 
     public function notifications()
