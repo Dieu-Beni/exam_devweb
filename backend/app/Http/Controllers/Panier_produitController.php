@@ -58,10 +58,10 @@ class Panier_produitController extends Controller
         $panier_produit = Panier_produit::find($id);
 
         if (!$panier_produit) {
-            return response()->json("Panier_produit non trouvé", 404);
+            return response()->json(['message' => 'Panier_produit non trouver'] ,404);
         }
 
-        return response()->json($panier_produit,200);
+        return response()->json($panier_produit,['message' => 'Panier_produit detaille'],200);
     }
 
     /**
@@ -71,11 +71,11 @@ class Panier_produitController extends Controller
     {
         $panier_produit = Panier_produit::find($id);
         if (!$panier_produit) {
-            return response()->json("Panier_produit non trouvé", 404);
+            return response()->json(['message' => 'Produit_panier non trouver'], 404);
         }
 
         $panier_produit->update($request->all());
-        return response()->json($panier_produit,200);
+        return response()->json($panier_produit,['message' => 'Panier_produit modifier avec succes'],200);
     }
 
     /**
@@ -85,10 +85,10 @@ class Panier_produitController extends Controller
     {
         $panier_produit = Panier_produit::find($id);
         if (!$panier_produit) {
-            return response()->json("Panier_produit non trouvé", 404);
+            return response()->json(['message' => 'Panier_produit non trouver'], 404);
         }
 
         $panier_produit->delete();
-        return response()->json("Panier_produit supprime avec succes.", 204);
+        return response()->json(['message' => 'Panier_produit supprimer avec succes'], 204);
     }
 }
