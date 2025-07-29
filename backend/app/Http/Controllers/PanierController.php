@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Panier;
+use App\Models\Commande;
 class PanierController extends Controller
 {
     /**
@@ -101,4 +102,34 @@ class PanierController extends Controller
         return response()->json(['message' => 'Panier validé avec succès', 'panier' => $panier]);
     }
 
-}
+    public function valider($id_panier)
+    {
+        $panier = Panier::with('produits')->findOrFail($id_panier);
+
+        // Vérifier s'il est déjà validé
+        if ($panier->statut === 'validé') {
+            return response()->json(['message' => 'Ce panier est déjà validé.'], 400);
+        }
+
+        // Étape 1 : Marquer le panier comme validé
+        $panier->statut = 'validé';
+        $panier->save();
+
+        // Étape 2 : Créer la commande liée
+        $commande = Commande::create([
+            'id_user' => $panier->id_user,
+            'id_panier' => $panier->id,
+            'statut' => 'en attente', // ou 'payée', 'livrée' etc. selon ton app
+            'total' => $panier->produits->sum(function ($produit) {
+                return $produit->pivot->montant;
+            }),
+        ]);
+
+        return response()->json([
+            'message' => 'Panier validé et commande créée.',
+            'commande_id' => $commande->id,
+            'total' => $commande->total
+        ], 201);
+        }
+
+    }
