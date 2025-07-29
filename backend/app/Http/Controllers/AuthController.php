@@ -54,7 +54,7 @@ class AuthController extends Controller
 
         // Si c'est un client, on vérifie le panier
         if ($user->role === 'client') {
-            $dernierPanier = $user->paniers()->latest()->first();
+            $dernierPanier = $user->panier()->latest()->first();
 
             if ($dernierPanier && $dernierPanier->statut === 'en cours') {
                 $panier_id = $dernierPanier->id;
