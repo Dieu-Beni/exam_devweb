@@ -11,15 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('panier_produits', function (Blueprint $table) {
+        Schema::create('panier_produit', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_panier')->constrained('paniers')->onDelete('cascade');
-            $table->foreignId('id_produit')->constrained('produits')->onDelete('cascade');
-            $table->integer('quantite');
-            $table->decimal('montant', 10, 2); 
-
             $table->timestamps();
-
         });
     }
 
@@ -28,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('panier_produits');
+        Schema::dropIfExists('panier_produit');
     }
 };

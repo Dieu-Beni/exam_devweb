@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Commande;
+use App\Models\Paiement;
+use Illuminate\Support\Carbon;
 class CommandeController extends Controller
 {
     /**
@@ -20,18 +22,36 @@ class CommandeController extends Controller
      */
     public function store(Request $request)
     {
-            $request->validate([
-            'id_user' => 'required|exists:users,id',
-            'adresse' => 'required|string|max:255',
-            'quantite' => 'required|integer|min:1',
-            'total' => 'required|numeric|min:0',
-            'statut' => 'required|string',
-            'id_panier' => 'required|exists:users,id',
-
+        // Validation de la commande
+        $validated = $request->validate([
+            'id_user'    => 'required|exists:users,id',
+            'adresse'    => 'required|string|max:255',
+            'quantite'   => 'required|integer|min:1',
+            'total'      => 'required|numeric|min:0',
+            'statut'     => 'required|in:en attente,en préparation,validée',
+            'id_panier'  => 'required|exists:users,id',
+            'mode_paiement' => 'required|in:en ligne,apres livraison'
         ]);
 
-        $commande = Commande::create($request->all());
-        return response()->json($commande, 201);
+        // Création de la commande
+        $commande = Commande::create([
+            ...$validated,
+        ]);
+
+        // Création automatique du paiement associé
+        $paiement = Paiement::create([
+            'id_commande' => $commande->id,
+            'mode'        => $validated['mode_paiement'],
+            'montant'     => $commande->total,
+            'statut'      => $validated['mode_paiement'] === 'en ligne' ? 'payé' : 'non_payé'
+        ]);
+
+        // Retourne la réponse avec les deux objets
+        return response()->json([
+            'message' => 'Commande et paiement créés avec succès.',
+            'commande' => $commande,
+            'paiement' => $paiement
+        ], 201);
     }
 
     /**
@@ -42,10 +62,10 @@ class CommandeController extends Controller
         $commande = Commande::find($id);
 
         if (!$commande) {
-            return response()->json("Commande non trouvé", 404);
+            return response()->json(['message' => 'Commande non trouvé'], 404);
         }
 
-        return response()->json($commande,200);
+        return response()->json($commande,['message' => 'Commande trouvé'],200);
     }
 
     /**

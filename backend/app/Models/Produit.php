@@ -34,4 +34,11 @@ class Produit extends Model
         return $this->hasMany(Article::class, 'id_produit');
     }
 
+    public function paniers()
+    {
+        return $this->belongsToMany(Panier::class, 'panier_produits')
+                    ->withPivot('quantite', 'montant')
+                    ->withTimestamps();
+    }
+
 }

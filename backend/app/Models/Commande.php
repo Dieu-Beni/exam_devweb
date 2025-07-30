@@ -15,10 +15,10 @@ class Commande extends Model
     protected $fillable = ['id_user', 'statut', 'adresse', 'quantite', 'total','id_panier'];
 
 
-    public function utilisateur()
-    {
-        return $this->belongsTo(Utilisateur::class, 'id_user');
-    }
+    public function user()
+{
+    return $this->belongsTo(User::class, 'id_user');
+}
 
     public function paiement()
     {
@@ -34,5 +34,10 @@ class Commande extends Model
     {
         return $this->hasMany(Article::class, 'id_commande');
     }
+
+    public function panier()
+{
+    return $this->belongsTo(Panier::class, 'id_panier');
+}
 
 }

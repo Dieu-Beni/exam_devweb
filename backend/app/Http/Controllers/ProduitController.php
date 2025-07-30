@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Models\Produit;
 use App\Http\Controllers\Controller;
@@ -24,7 +24,7 @@ class ProduitController extends Controller
      */
     public function store(Request $request)
     {
-       
+
       $validated = $request->validate([
                 'nom' => 'required|string',
                 'description' => 'nullable|string',
@@ -34,6 +34,7 @@ class ProduitController extends Controller
                 'id_categorie' => 'required|exists:categories,id'
             ]);
            
+            
             // Étape 2 : traitement de l'image
             if ($request->hasFile('image_url')) {
                 $path = $request->file('image_url')->store('images', 'public');
@@ -67,15 +68,15 @@ class ProduitController extends Controller
      */
     public function show(string $id)
     {
-        $produit = Produit::find($id);
+        $produit = Produit::with('categorie')->find($id);
 
-    if (!$produit) {
-        return response()->json("Produit non trouvé", 404);
-    }
+        if (!$produit) {
+            return response()->json(['message' => 'Produit non trouvé'], 404);
+        }
 
-    $produit = Produit::with('categorie')->findOrFail($id);
-    return response()->json($produit,200);
+        $produit->image_url = $produit->image_url ? asset("storage/{$produit->image_url}") : null;
 
+        return response()->json($produit,['message' => 'Produit trouvé'], 200);
     }
 
     /**
@@ -85,11 +86,44 @@ class ProduitController extends Controller
     {
         $produit = Produit::find($id);
         if (!$produit) {
-            return response()->json("Produit non trouvé", 404);
+            return response()->json(['message' => 'Produit non trouvé', 'contenu'=> $request->all()], 404);
         }
 
-        $produit->update($request->all());
-        return response()->json($produit,200);
+        // Valider les champs envoyés
+        $validated = $request->validate([
+            'nom' => 'required|string',
+            'description' => 'nullable|string',
+            'prix' => 'required|numeric',
+            'stock' => 'required|integer',
+            'image_url' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:2048',
+            'id_categorie' => 'required|exists:categories,id'
+        ]);
+        
+        //Log::info('Produit créé avec succès', ['produit' => $produit]);
+        // Gérer le remplacement d’image
+        if ($request->hasFile('image_url')) {
+            // Supprimer l’ancienne image si elle existe
+            if ($produit->image_url && \Storage::disk('public')->exists($produit->image_url)) {
+                \Storage::disk('public')->delete($produit->image_url);
+            }
+
+            // Stocker la nouvelle image
+            $path = $request->file('image_url')->store('images', 'public');
+            $validated['image_url'] = $path; // On remplace l'image par son chemin
+         
+        }
+
+        // Mise à jour
+        $produit->update($validated);
+
+        return response()->json([
+            'message' => 'Produit mis à jour avec succès',
+            'produit' => [
+                ...$produit->toArray(),
+                'image_url' => $produit->image_url ? asset("storage/{$produit->image_url}") : null,
+                'categorie' => $produit->categorie
+            ]
+        ], 200);
     }
 
     /**
@@ -99,12 +133,17 @@ class ProduitController extends Controller
     {
         $produit = Produit::find($id);
         if (!$produit) {
-            return response()->json("Produit non trouvé", 404);
+            return response()->json(['message' => 'Produit non trouvé'], 404);
+        }
+
+        // Supprimer l’image du stockage si elle existe
+        if ($produit->image_url && \Storage::disk('public')->exists($produit->image_url)) {
+            \Storage::disk('public')->delete($produit->image_url);
         }
 
         $produit->delete();
-        return response()->json("Produit supprime avec succes.", 204);
 
+        return response()->json(['message' => 'Produit supprimé avec succès.'], 200);
     }
 
     public function produitsByCategorieId($idCategorie)
