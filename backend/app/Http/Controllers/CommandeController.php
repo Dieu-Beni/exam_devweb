@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Commande;
 use App\Models\Paiement;
+use App\Models\Facture;
 use Illuminate\Support\Carbon;
+use PDF;
 class CommandeController extends Controller
 {
     /**
@@ -36,7 +38,13 @@ class CommandeController extends Controller
 
         // Création de la commande
         $commande = Commande::create([
-            ...$validated,
+            'id_user'   => $validated['id_user'],
+            'adresse'   => $validated['adresse'],
+            'telephone' => $validated['telephone'],
+            'quantite'  => $validated['quantite'],
+            'total'     => $validated['total'],
+            'statut'    => $validated['statut'],
+            'id_panier' => $validated['id_panier'],
         ]);
 
         // Création automatique du paiement associé
@@ -47,11 +55,36 @@ class CommandeController extends Controller
             'statut'      => $validated['mode_paiement'] === 'en ligne' ? 'payé' : 'non_payé'
         ]);
 
-        // Retourne la réponse avec les deux objets
+        // Génération de la facture uniquement si mode = apres livraison
+        $facture = null;
+        if ($validated['mode_paiement'] === 'apres livraison') {
+
+            // Générer le PDF de la facture
+            $pdf = PDF::loadView('factures.modele', [
+                'commande' => $commande,
+                'paiement' => $paiement
+            ]);
+
+            // Nom de fichier
+            $fileName = 'facture_commande_' . $commande->id . '_' . time() . '.pdf';
+
+            // Sauvegarde dans storage/app/public/factures
+            Storage::disk('public')->put('factures/' . $fileName, $pdf->output());
+
+            // Création de la facture
+            $facture = Facture::create([
+                'id_commande' => $commande->id,
+                'montant'     => $commande->total,
+                'date'        => now(),
+                'chemin_pdf' => 'storage/factures/' . $fileName
+            ]);
+        }
+
         return response()->json([
-            'message' => 'Commande et paiement créés avec succès.',
+            'message'  => 'Commande, paiement, et facture (si applicable) créés.',
             'commande' => $commande,
-            'paiement' => $paiement
+            'paiement' => $paiement,
+            'facture'  => $facture
         ], 201);
     }
 

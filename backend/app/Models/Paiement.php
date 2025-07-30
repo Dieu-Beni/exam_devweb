@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\Facture;
+use App\Models\Commande;
 
 class Paiement extends Model
 {
@@ -10,7 +13,7 @@ class Paiement extends Model
 
     public function commande()
     {
-        return $this->belongsTo(Commande::class);
+        return $this->belongsTo(Commande::class, 'id_commande');
     }
 
 }
