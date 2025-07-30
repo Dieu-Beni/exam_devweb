@@ -38,7 +38,7 @@ class Produit extends Model
     public function paniers()
     {
         return $this->belongsToMany(Panier::class, 'panier_produits','id_panier','id_produit')
-                    ->withPivot('quantite', 'montant')
+                    ->withPivot('quantite', 'montant','id')
                     ->withTimestamps();
     }
 

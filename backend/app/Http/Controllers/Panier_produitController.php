@@ -61,7 +61,7 @@ class Panier_produitController extends Controller
             return response()->json(['message' => 'Panier_produit non trouver'] ,404);
         }
 
-        return response()->json($panier_produit,['message' => 'Panier_produit detaille'],200);
+        return response()->json($panier_produit,200);
     }
 
     /**
@@ -75,7 +75,7 @@ class Panier_produitController extends Controller
         }
 
         $panier_produit->update($request->all());
-        return response()->json($panier_produit,['message' => 'Panier_produit modifier avec succes'],200);
+        return response()->json($panier_produit,200);
     }
 
     /**
