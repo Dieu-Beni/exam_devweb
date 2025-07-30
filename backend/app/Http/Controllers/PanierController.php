@@ -130,6 +130,20 @@ class PanierController extends Controller
             'commande_id' => $commande->id,
             'total' => $commande->total
         ], 201);
+    }
+
+    public function produitsParPanier($id)
+    {
+        $panier = Panier::with('produits')->find($id);
+
+        if (!$panier) {
+            return response()->json(['message' => 'Panier non trouvé'], 404);
         }
 
+        return response()->json([
+            'panier_id' => $panier->id,
+            'produits' => $panier->produits
+        ],['message' => 'Panier trouvé'], 200);
     }
+
+}
