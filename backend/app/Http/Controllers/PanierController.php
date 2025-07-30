@@ -142,7 +142,7 @@ class PanierController extends Controller
 
         return response()->json([
             'message' => 'Produits récupérés avec succès pour le panier',
-            'panier_id' => $panier->id,
+            'id_panier' => $panier->id,
             'produits' => $panier->produits
             
         ], 200);
