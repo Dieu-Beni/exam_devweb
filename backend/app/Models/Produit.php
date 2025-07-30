@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Image;
 use App\Models\Panier_produit;
+use App\Models\Panier;
 use App\Models\Categorie;
 use App\Models\Article;
 
@@ -36,7 +37,7 @@ class Produit extends Model
 
     public function paniers()
     {
-        return $this->belongsToMany(Panier::class, 'panier_produits')
+        return $this->belongsToMany(Panier::class, 'panier_produits','id_panier'.'id_produit')
                     ->withPivot('quantite', 'montant')
                     ->withTimestamps();
     }

@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Commande;
+use App\Models\Panier;
+use App\Models\Produit;
 use App\Models\Panier_produit;
 
 
