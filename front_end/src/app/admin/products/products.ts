@@ -20,7 +20,6 @@ export class Products implements OnInit{
     stock: 0,
     id_categorie: 0,
     imageUrl: "",
-    img: null,
   };
 
   categoryList: any [] = [];
@@ -35,7 +34,7 @@ export class Products implements OnInit{
       prix: ['', [Validators.required, ]],
       stock: ['', [Validators.required, ]],
       id_categorie: ['', [Validators.required, ]],
-      //imageUrl: ['', [Validators.required, ]],
+      image: ['', [Validators.required, ]],
 
     });
   }
@@ -64,11 +63,24 @@ export class Products implements OnInit{
   }
 
   onUpdate(){
-    this.productSvc.updateproduct(this.productsOjt).subscribe((res: any) => {
-      debugger;
-      if(res.result){
+    debugger;
+    const formData = new FormData();
+    formData.append('id', this.productsOjt.id);
+    formData.append('nom', this.productForm.value.nom);
+    formData.append('description', this.productForm.value.description);
+    formData.append('stock', this.productForm.value.stock);
+    formData.append('prix', this.productForm.value.prix);
+    if(this.selectedFile){
+      formData.append('image_url', this.selectedFile);
+    }
+    formData.append('id_categorie', this.productForm.value.id_categorie);
+
+    this.productSvc.updateproduct(formData).subscribe((res: any) => {
+      //debugger;
+      if(res){
         alert("Produit modifie");
         this.getAllProducts();
+        this.clear();
       }else{
         alert(res.message)
       }
@@ -88,17 +100,16 @@ export class Products implements OnInit{
         formData.append('description', this.productForm.value.description);
         formData.append('stock', this.productForm.value.stock);
         formData.append('prix', this.productForm.value.prix);
-        formData.append('image', this.selectedFile);
+        formData.append('image_url', this.selectedFile);
         formData.append('id_categorie', this.productForm.value.id_categorie);
-        console.log(this.selectedFile)
 
         this.productSvc.saveProduct(formData).subscribe({
           next: res => {
-          debugger;
           
           alert("Produit cree");
           this.getAllProducts();
           this.productForm.reset();
+          this.productForm.get('image')?.setValue(null);
           this.selectedFile = null;
         
           },
@@ -106,7 +117,7 @@ export class Products implements OnInit{
           console.error("Erreur API :", err);
           alert("Erreur lors de l'envoi. "+ err.error.message);
         }
-      })
+      });
 
     }else{
       this.productForm.markAllAsTouched();
@@ -117,13 +128,11 @@ export class Products implements OnInit{
   onDelete(product: any){
     const verif = confirm("Voulez vous vraiment supprime ce produit ?");
     if(verif){
-      this.productSvc.deleteProduct(product.productId).subscribe((res: any) => {
-        if(res.result){
+      this.productSvc.deleteProduct(product.id).subscribe((res: any) => {
+        
           alert("Produit Supprime !");
           this.getAllProducts();
-        }else{
-          alert(res.message);
-        }
+        
     });
     }
     
@@ -131,6 +140,11 @@ export class Products implements OnInit{
 
   onEdit(item: any){
     this.productsOjt = item;
+    this.productForm.get('nom')?.setValue(item.nom);
+    this.productForm.get('description')?.setValue(item.description);
+    this.productForm.get('prix')?.setValue(item.prix);
+    this.productForm.get('stock')?.setValue(item.stock);
+    this.productForm.get('id_categorie')?.setValue(item.id_categorie);
     this.showPanel();
   }
 
@@ -142,8 +156,10 @@ export class Products implements OnInit{
       prix: 0,
       stock: 0,
       id_cat: 0,
-      imageUrl: "",
+      image_url: "",
     };
+    this.productForm.get('image')?.setValue(null);
+    this.productForm.reset()
   }
 
   onFileSelected(event: any): void {

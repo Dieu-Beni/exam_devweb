@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Product } from '../../services/products/product';
 import { Router } from '@angular/router';
+import { Shared } from '../../services/shared/shared';
+import { Cards } from '../../services/card/cards';
 
 @Component({
   selector: 'app-client-products',
@@ -10,18 +12,15 @@ import { Router } from '@angular/router';
   styleUrl: './client-products.css'
 })
 export class ClientProducts implements OnInit{
+  @Output() variableChange = new EventEmitter<number>(); 
    productsOjt: any = {
-      "productId": 0,
-      "productSku": "",
-      "productName": "",
-      "productPrice": 0,
-      "productShortName": "",
-      "productDescription": "",
-      "createdDate": new Date(),
-      "deliveryTimeSpan": "",
-      "categoryId": 0,
-      "productImageUrl": "",
-      "userId": 0
+      id: 0,
+      nom: "",
+      description: "",
+      prix: 0,
+      stock: 0,
+      id_categorie: 0,
+      imageUrl: "",
     };
   
     prodlist: any [] = [];
@@ -30,18 +29,22 @@ export class ClientProducts implements OnInit{
     currentPage: number = 1;
     pageSize: number = 12;
     pages: number[] = [];
+    numberItem: number = 0;
+    proCardList: any[] =[];
   
-    constructor(private prodSvc: Product, private router: Router){}
+    constructor(private prodSvc: Product, private router: Router, private shared: Shared, private card: Cards){}
   
     ngOnInit(): void {
       this.getAllProducts();
+      const id = Number(sessionStorage.getItem('id_panier'));
+      this.getAllProductsCard(id);
     }
   
     getAllProducts(){
       this.prodSvc.getProducts().subscribe((res: any) => {
-        if(res.result){
-          this.prodlist = res.data;
-          this.items = res.data;
+        if(res){
+          this.prodlist = res;
+          this.items = res;
           this.updatePagination();
         }else{
           alert(res.message)
@@ -82,5 +85,52 @@ export class ClientProducts implements OnInit{
   
     navigateToRoute(id: number){
       this.router.navigate(['/product', id])
+    }
+
+    addToCard(pro: any){
+      if(sessionStorage.getItem('access_token') && sessionStorage.getItem('id_panier')){
+
+        if(!this.categoryList.find(p => p.id === pro.id)){
+          this.numberItem++;
+          this.sendToParent(this.numberItem);
+          this.categoryList.push(pro);
+          //console.log(this.categoryList)
+          const panierPro:any = {
+            'id_panier': sessionStorage.getItem('id_panier'),
+            'id_produit': pro.id,
+            'quantite': 1
+          }
+
+          this.card.saveProductCard(panierPro).subscribe((res: any) => {
+            if(res.message){
+              alert('Ajout effectue !');
+            }
+          })
+
+        }
+
+        //console.log(sessionStorage.getItem('access_token'), sessionStorage.getItem('id_panier'))
+        //alert("Utilisateur Connecte")
+        
+      }else{
+        alert("Utilisateur non connecte")
+      }
+    }
+
+
+
+    sendToParent(num: number) {
+      this.shared.setVariable(num);
+    }
+
+    getAllProductsCard(id: number){
+      this.card.getCardProducts(id).subscribe((res: any) => {
+        console.log("la liste: ",res)
+        this.proCardList = res.produits;
+        console.log(this.proCardList)
+        this.numberItem = this.proCardList.length;
+        console.log("num: ", this.numberItem)
+        this.sendToParent(this.numberItem)
+      })
     }
 }

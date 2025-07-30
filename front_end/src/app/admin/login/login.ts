@@ -19,10 +19,22 @@ export class Login {
   constructor(private router: Router, private userSvc: Users){}
 
   onLogin(){
-    this.userSvc.login(this.loginObject).subscribe((res: any) => {
+    this.userSvc.login(this.loginObject).subscribe(
+      (res: any) => {
       if(res && res.access_token){
-        alert("utilisateur connecte")
-        this.router.navigateByUrl("/admin");
+        console.log("La reponse ",res);
+        alert("utilisateur connecte");
+        sessionStorage.setItem("user_name", res.user.nom);
+        sessionStorage.setItem("role", res.user.role);
+        sessionStorage.setItem("user_id", res.user.id);
+        sessionStorage.setItem("email", res.user.email);
+        sessionStorage.setItem("access_token", res.access_token);
+        sessionStorage.setItem("id_panier", res.panier_id);
+
+        if(res.user.role == "client"){
+          this.router.navigateByUrl("/");
+
+        }else this.router.navigateByUrl("/admin");
       }else{
         alert("Erreur utilisateur non reconnu")
         console.log(res)

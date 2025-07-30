@@ -25,4 +25,8 @@ export class Category {
     deleteCategory(id: number){
       return this.http.delete(Constant.API_END_POINT + Constant.METODS.CATEGORY + id);
     }
+
+    getById(id: number){
+      return this.http.get(Constant.API_END_POINT + Constant.METODS.CATEGORY + id);
+    }
 }

@@ -7,6 +7,7 @@ import { Landing } from './client/landing/landing';
 import { CategoryProducts } from './client/category-products/category-products';
 import { ClientProducts } from './client/client-products/client-products';
 import { Register } from './pages/register/register';
+import { Customer } from './admin/customer/customer';
 
 export const routes: Routes = [
     {
@@ -48,6 +49,10 @@ export const routes: Routes = [
             {
                 path: 'categories',
                 component: Categories
+            },
+            {
+                path: 'customers',
+                component: Customer
             }
         ]
     }

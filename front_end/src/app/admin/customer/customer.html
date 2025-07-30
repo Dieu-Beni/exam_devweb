@@ -1,1 +1,104 @@
-<p>customer works!</p>
+<div class="row">
+    <div [ngClass]="showAdd? 'col-8' : 'col-12'">
+        <div class="card">
+            <div class="card-header bg-primary">
+                <div class="row">
+                    <div class="col-6 text-center">
+                        <h1>Liste des Utilisateurs</h1>
+                    </div>
+                    <div class="col-6 text-end">
+                        <button class="btn btn-sm btn-success" (click)="showPanel()">Ajouter</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <table class="table table-bordered table-dark text-center">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">NOM</th>
+                                <th scope="col">PRENOM</th>
+                                <th scope="col">EMAIL</th>
+                                <th scope="col">ADRESSE</th>
+                                <th scope="col">ROLE</th>
+                                <th scope="col" colspan="2">ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let user of users; let index = index">
+                                <th scope="row">{{index+1}}</th>
+                                <td> {{user.nom}} </td>
+                                <td> {{user.prenom}} </td>
+                                <td> {{user.email}} </td>
+                                <td> {{user.adresse}} </td>
+                                <td> {{user.role}} </td>
+                                <td><a class="btn btn-primary" (click)="onEdit(user)">Modifier</a></td>
+                                <td><a class="btn btn-danger" (click)="onDelete(user)">Supprimer</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-4" *ngIf="showAdd">
+        <div class="card">
+            <div class="card-header bg-primary">
+                <div class="row">
+                    <div class="col-6">
+                        Nouvel Utilisateur
+                    </div>
+                    <div class="col-6 text-end">
+                        <button class="btn btn-sm btn-success" (click)="closePanel()">Fermer</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6">
+                        <label for="sku">Nom</label>
+                        <input type="text" [(ngModel)]="user.nom" class="form-control">
+                    </div>
+                    <div class="col-6">
+                        <label for="sku">Prenom</label>
+                        <input type="text" [(ngModel)]="user.prenom" class="form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <label for="sku">Email</label>
+                        <input type="text" [(ngModel)]="user.email" class="form-control">
+                    </div>
+                    <div class="col-6">
+                        <label for="sku">Adresse</label>
+                        <input type="text" [(ngModel)]="user.adresse" class="form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6" *ngIf="user.id === 0">
+                        <label for="sku">Mot de Passe</label>
+                        <input type="password" [(ngModel)]="user.password" class="form-control">
+                    </div>
+                    <div [ngClass]="user.id == 0 ? 'col-6':'col-12'">
+                        <label for="sku">Role</label>
+                        <select [(ngModel)]="user.role" class="form-select">
+                            <option value=""></option>
+                            <option value="admin">Admin</option>
+                            <option value="client">Client</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row pt-2">
+                    <div class="col-6 text-center">
+                        <button class="btn btn-success" (click)="clear()">Netoyer</button>
+                    </div>
+                    <div class="col-6 text-center">
+                        <button class="btn btn-success" *ngIf="user.id === 0 || user.id === ''" (click)="onSave()">Creer l'Utilisateur</button>
+                        <button class="btn btn-primary" *ngIf="user.id !== 0" (click)="onUpdate()">Modifier l'Utilisateur</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

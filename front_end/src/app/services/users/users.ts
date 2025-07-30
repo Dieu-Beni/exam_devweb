@@ -16,5 +16,16 @@ export class Users {
   login(user: any){
     return this.http.post(Constant.API_END_POINT + Constant.METODS.LOGIN, user);
   }
+
+  getAll(){
+    return this.http.get(Constant.API_END_POINT + Constant.METODS.USER);
+  }
+
+  update(user: any){
+    return this.http.put(Constant.API_END_POINT + Constant.METODS.USER + user.id, user);
+  }
+  delete(id: number){
+    return this.http.delete(Constant.API_END_POINT + Constant.METODS.USER + id);
+  }
   
 }

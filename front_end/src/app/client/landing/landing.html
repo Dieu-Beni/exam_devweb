@@ -69,7 +69,7 @@
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Categories</a>
                                 <ul class="dropdown-menu m-0 bg-secondary rounded-0" style="max-height: 300px; overflow-y: auto;">
                                     <li *ngFor="let cat of categoryList">
-                                        <a class="dropdown-item btn" (click)="navigateToRoute(cat.categoryId)">{{ cat.categoryName }}</a>
+                                        <a class="dropdown-item btn" (click)="navigateToRoute(cat.id)">{{ cat.nom }}</a>
                                     </li>
                                 </ul>
                             </div>
@@ -84,7 +84,7 @@
                                 <i class="fa fa-shopping-bag fa-2x"></i>
                                 <span
                                     class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1"
-                                    style="top: -5px; left: 15px; height: 20px; min-width: 20px;">3</span>
+                                    style="top: -5px; left: 15px; height: 20px; min-width: 20px;">{{numberItem}}</span>
                             </a>
                             <a class="my-auto btn" (click)="navToRoute('/login')">
                                 <i class="fas fa-user fa-2x"></i>
@@ -137,6 +137,7 @@
     <script src="lib/lightbox/js/lightbox.min.js"></script>
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
     <router-outlet></router-outlet>
+    
 </body>
 
 </html>

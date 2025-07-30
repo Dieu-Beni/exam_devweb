@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { Product } from '../../services/products/product';
+import { Shared } from '../../services/shared/shared';
 
 @Component({
   selector: 'app-landing',
@@ -12,17 +13,25 @@ import { Product } from '../../services/products/product';
 export class Landing implements OnInit{
 
   categoryList: any[] = [];
+  numberItem: number = 0;
 
-  constructor(private prodSvc: Product, private router: Router){}
+  constructor(private prodSvc: Product, private router: Router, private shared: Shared){
+    
+  }
 
   ngOnInit(): void {
+    this.shared.variable$.subscribe(value => {
+      if(value !== null){
+        this.numberItem = value;
+      }
+    })
     this.getAllCategories();
   }
 
   getAllCategories(){
     this.prodSvc.getAllCategories().subscribe((res: any) => {
-      if(res.result){
-        this.categoryList = res.data;
+      if(res){
+        this.categoryList = res;
       }
     })
   }
@@ -34,4 +43,5 @@ export class Landing implements OnInit{
   navToRoute(str: string){
     this.router.navigate([str])
   }
+
 }

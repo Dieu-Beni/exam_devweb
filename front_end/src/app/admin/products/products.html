@@ -15,12 +15,12 @@
                 <div class="row">
                     <div class="col-3" *ngFor="let product of productList">
                         <div class="card">
-                            <img class="card-img-top" style="height: 12.125rem;" [src]="product.productImageUrl" alt="Card image">
+                            <img class="card-img-top" style="height: 12.125rem;" [src]="'http://localhost:8000/storage/' + product.image_url" alt="Card image">
                             <div class="card-body">
-                                <h4 class="card-title">{{product.productShortName}}</h4>
-                                <p class="card-text"> {{product.categoryName}} </p>
-                                <p class="card-text"> {{product.productPrice}} FCFA</p>
-                                
+                                <h4 class="card-title">{{product.nom}}</h4>
+                                <p class="card-text"> {{product.categorie.nom}} </p>
+                                <p class="card-text"> {{product.prix}} FCFA</p>
+                                <p class="card-text"> {{product.stock}} En stock</p>
                                 <a class="btn btn-sm btn-primary" (click)="onEdit(product)">Modifier</a>
                                 <a class="btn btn-sm btn-danger mx-2" (click)="onDelete(product)">Supprimer</a>
                                 
@@ -44,7 +44,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <form [formGroup]="productForm" (ngSubmit)="onSave()">
+                <form [formGroup]="productForm">
                     <div class="row" >
                         <div class="col-6">
                             <label for="sku">Nom</label>
@@ -80,7 +80,7 @@
                         </div>
                         <div class="col-12">
                             <label for="sku">Image</label>
-                            <input type="file" (change)="onFileSelected($event)" class="form-control" accept="image/*">
+                            <input type="file" (change)="onFileSelected($event)" formControlName="image" class="form-control" accept="image/*">
                             <div *ngIf="productForm.get('image')?.invalid && productForm.get('image')?.touched" class="text-danger">
                                 L'image est requise.
                             </div>
@@ -100,7 +100,7 @@
                             <button class="btn btn-success"(click)="clear()">Netoyer</button>
                         </div>
                         <div class="col-6 text-center">
-                            <button class="btn btn-success" *ngIf="productsOjt.id === 0 || productsOjt.id === ''" type="submit">Creer le Produit</button>
+                            <button class="btn btn-success" *ngIf="productsOjt.id === 0 || productsOjt.id === ''" (click)="onSave()">Creer le Produit</button>
                             <button class="btn btn-primary" *ngIf="productsOjt.id !== 0" (click)="onUpdate()">Modifier le Produit</button>
                         </div>
                     </div>

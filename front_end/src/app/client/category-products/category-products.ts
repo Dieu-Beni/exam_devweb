@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Product } from '../../services/products/product';
 import { CommonModule } from '@angular/common';
+import { Category } from '../../services/category/category';
 
 @Component({
   selector: 'app-category-products',
@@ -18,19 +19,27 @@ export class CategoryProducts {
     currentPage: number = 1;
     pageSize: number = 12;
     pages: number[] = [];
+    categorie: string = '';
 
-  constructor(private activedRoute: ActivatedRoute, private productSvc: Product){
+  constructor(private activedRoute: ActivatedRoute, private productSvc: Product, private categorieSvc: Category){
     this.activedRoute.params.subscribe((res: any) => {
       this.activeCategoryId = res.id;
+      this.getCategorie(this.activeCategoryId);
       this.loadProducts();
     });
   }
 
   loadProducts(){
     this.productSvc.getAllProductsByCategory(this.activeCategoryId).subscribe((res: any) => {
-      this.products = res.data;
+      this.products = res;
       this.updatePagination();
       
+    })
+  }
+
+  getCategorie(id: number){
+    this.categorieSvc.getById(id).subscribe((res: any) => {
+      this.categorie = res.nom;
     })
   }
   
