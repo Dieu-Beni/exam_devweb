@@ -64,6 +64,9 @@ Route::post('paniers/{id}/valider', [PanierController::class, 'valider']);//->mi
 Route::get('/paniers/{id}/produits', [PanierController::class, 'produitsParPanier']);
 
 
+Route::post('/commandes', [CommandeController::class, 'store']);
+
+
 Route::get('factures/{id}/pdf', [FactureController::class, 'genererPdf']);//->middleware('auth:sanctum');
 
 

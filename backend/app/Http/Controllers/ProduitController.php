@@ -76,7 +76,7 @@ class ProduitController extends Controller
 
         $produit->image_url = $produit->image_url ? asset("storage/{$produit->image_url}") : null;
 
-        return response()->json($produit,['message' => 'Produit trouvé'], 200);
+        return response()->json($produit, 200);
     }
 
     /**

@@ -26,6 +26,7 @@ class CommandeController extends Controller
         $validated = $request->validate([
             'id_user'    => 'required|exists:users,id',
             'adresse'    => 'required|string|max:255',
+            'telephone'  => 'required|string|max:20',
             'quantite'   => 'required|integer|min:1',
             'total'      => 'required|numeric|min:0',
             'statut'     => 'required|in:en attente,en préparation,validée',
@@ -65,7 +66,7 @@ class CommandeController extends Controller
             return response()->json(['message' => 'Commande non trouvé'], 404);
         }
 
-        return response()->json($commande,['message' => 'Commande trouvé'],200);
+        return response()->json($commande,200);
     }
 
     /**

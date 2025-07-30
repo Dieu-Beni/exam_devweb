@@ -120,6 +120,7 @@ class PanierController extends Controller
             'id_user' => $panier->id_user,
             'id_panier' => $panier->id,
             'statut' => 'en attente', // ou 'payée', 'livrée' etc. selon ton app
+            
             'total' => $panier->produits->sum(function ($produit) {
                 return $produit->pivot->montant;
             }),

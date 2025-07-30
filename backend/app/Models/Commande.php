@@ -12,7 +12,7 @@ use App\Models\Panier;
 
 class Commande extends Model
 {
-    protected $fillable = ['id_user', 'statut', 'adresse', 'quantite', 'total','id_panier'];
+    protected $fillable = ['id_user', 'statut', 'adresse', 'quantite', 'total','id_panier','telephone'];
 
 
     public function user()
