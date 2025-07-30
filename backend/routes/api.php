@@ -59,10 +59,12 @@ Route::post('/produits/{id}', [ProduitController::class, 'update']);
 // Optionnel : récupérer les produits par catégorie avec juste l'id de la catégorie
 Route::get('produits/by-categorie/{id}', [ProduitController::class, 'produitsByCategorieId']);
 
-Route::post('paniers/{id}/valider', [PanierController::class, 'validerPanier'])->middleware('auth:sanctum');
+Route::post('paniers/{id}/valider', [PanierController::class, 'validerPanier']);//->middleware('auth:sanctum');
+
+Route::get('/paniers/{id}/produits', [PanierController::class, 'produitsParPanier']);
 
 
-Route::get('factures/{id}/pdf', [FactureController::class, 'genererPdf'])->middleware('auth:sanctum');
+Route::get('factures/{id}/pdf', [FactureController::class, 'genererPdf']);//->middleware('auth:sanctum');
 
 
 Route::post('register', [AuthController::class, 'register']);
