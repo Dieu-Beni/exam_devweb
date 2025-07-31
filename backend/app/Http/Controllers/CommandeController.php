@@ -52,7 +52,7 @@ class CommandeController extends Controller
             'id_commande' => $commande->id,
             'mode'        => $validated['mode_paiement'],
             'montant'     => $commande->total,
-            'statut'      => $validated['mode_paiement'] === 'en ligne' ? 'payé' : 'non_payé'
+            'statut'      => $validated['mode_paiement'] === 'en ligne' ? 'payé' : 'non payé'
         ]);
 
         // Génération de la facture uniquement si mode = apres livraison
