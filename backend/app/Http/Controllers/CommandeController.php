@@ -54,7 +54,7 @@ class CommandeController extends Controller
         ]);
 
         // Récupérer l'utilisateur (client)
-       /* $client = $commande->user; // relation user() à définir dans le modèle Commande
+        $client = $commande->user; /* relation user() à définir dans le modèle Commande
 
         // Récupérer l’admin (par exemple le 1er utilisateur admin)
         $admin = User::where('role', 'admin')->first(); // ou id = 1 si tu as un seul admin
