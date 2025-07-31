@@ -60,7 +60,7 @@ class CommandeController extends Controller
         if ($validated['mode_paiement'] === 'apres livraison') {
 
             // Générer le PDF de la facture
-            $pdf = PDF::loadView('factures.modele', [
+            $pdf = PDF::loadView('factures.factures', [
                 'commande' => $commande,
                 'paiement' => $paiement
             ]);
