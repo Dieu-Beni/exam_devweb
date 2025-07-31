@@ -54,7 +54,7 @@ class CommandeController extends Controller
         ]);
 
         // Récupérer l'utilisateur (client)
-        $client = $commande->user; // relation user() à définir dans le modèle Commande
+       /* $client = $commande->user; // relation user() à définir dans le modèle Commande
 
         // Récupérer l’admin (par exemple le 1er utilisateur admin)
         $admin = User::where('role', 'admin')->first(); // ou id = 1 si tu as un seul admin
@@ -65,8 +65,8 @@ class CommandeController extends Controller
                 'message' => "Le client {$client->name} a passé une commande (#{$commande->id}) d’un montant de {$commande->total} FCFA.",
                 'id_user' => $admin->id
             ]);
-        }
-        $panier_produit = app(PanierController::class)->produitsParPanier($validated['id_panier']);
+        }  */
+        $panier_produit = app(PanierController::class)->produitsParPanier2($validated['id_panier']);
 
         // Création automatique du paiement associé
         $paiement = Paiement::create([

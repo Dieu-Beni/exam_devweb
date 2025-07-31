@@ -149,4 +149,15 @@ class PanierController extends Controller
         ], 200);
     }
 
+    public function produitsParPanier2($id)
+    {
+        $panier = Panier::with('produits')->find($id);
+
+        if (!$panier) {
+            return [];
+        }
+
+        return $panier->produits;
+    }
+
 }
