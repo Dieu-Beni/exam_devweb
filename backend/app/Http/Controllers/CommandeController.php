@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Commande;
 use App\Models\Paiement;
 use App\Models\Panier;
-use App\Http\PanierController;
+use App\Http\Controllers\PanierController;
 use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
