@@ -78,7 +78,7 @@ class CommandeController extends Controller
                 'id_commande' => $commande->id,
                 'montant'     => $commande->total,
                 'date'        => now(),
-                'chemin_pdf' => 'storage/factures/' . $fileName
+                'fichier_pdf' => 'storage/factures/' . $fileName
             ]);
         }
 
