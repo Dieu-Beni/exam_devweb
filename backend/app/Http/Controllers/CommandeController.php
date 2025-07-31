@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Commande;
 use App\Models\Paiement;
+use App\Models\Panier;
+use App\Http\PanierController;
+use App\Models\Notification;
+use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
 use App\Models\Facture;
@@ -49,6 +53,21 @@ class CommandeController extends Controller
             'id_panier' => $validated['id_panier'],
         ]);
 
+        // Récupérer l'utilisateur (client)
+        $client = $commande->user; // relation user() à définir dans le modèle Commande
+
+        // Récupérer l’admin (par exemple le 1er utilisateur admin)
+        $admin = User::where('role', 'admin')->first(); // ou id = 1 si tu as un seul admin
+
+        if ($admin) {
+            Notification::create([
+                'titre'   => 'Nouvelle commande de ' . $client->name,
+                'message' => "Le client {$client->name} a passé une commande (#{$commande->id}) d’un montant de {$commande->total} FCFA.",
+                'id_user' => $admin->id
+            ]);
+        }
+        $panier_produit = app(PanierController::class)->produitsParPanier($validated['id_panier']);
+
         // Création automatique du paiement associé
         $paiement = Paiement::create([
             'id_commande' => $commande->id,
@@ -57,6 +76,7 @@ class CommandeController extends Controller
             'statut'      => $validated['mode_paiement'] === 'en ligne' ? 'payé' : 'non payé'
         ]);
 
+
         // Génération de la facture uniquement si mode = apres livraison
         $facture = null;
         if ($validated['mode_paiement'] === 'apres livraison') {
@@ -64,7 +84,9 @@ class CommandeController extends Controller
             // Générer le PDF de la facture
             $pdf = PDF::loadView('factures.factures', [
                 'commande' => $commande,
-                'paiement' => $paiement
+                'paiement' => $paiement,
+                'produits' => $panier_produit,
+                'client' => $client
             ]);
 
             // Nom de fichier
@@ -86,7 +108,8 @@ class CommandeController extends Controller
             'message'  => 'Commande, paiement, et facture (si applicable) créés.',
             'commande' => $commande,
             'paiement' => $paiement,
-            'facture'  => $facture
+            'facture'  => $facture,
+            'facture_url' => $facture ? asset($facture->chemin_pdf) : null
         ], 201);
     }
 
