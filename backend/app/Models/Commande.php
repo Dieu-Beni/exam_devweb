@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 use App\Models\Article;
 use App\Models\Facture;
+use App\Models\Carte;
 use App\Models\Paiement;
 use App\Models\Panier;
 
@@ -29,6 +30,11 @@ class Commande extends Model
     public function facture()
     {
         return $this->hasOne(Facture::class, 'id_commande');
+    }
+
+    public function carte()
+    {
+        return $this->hasOne(Carte::class, 'id_carte');
     }
 
     public function articles()

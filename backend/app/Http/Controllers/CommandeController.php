@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Commande;
 use App\Models\Paiement;
 use App\Models\Panier;
+use App\Models\Carte;
 use App\Http\Controllers\PanierController;
 use App\Models\Notification;
 use App\Models\User;
@@ -39,7 +40,13 @@ class CommandeController extends Controller
             'total'      => 'required|numeric|min:0',
             'statut'     => 'required|in:en attente,en préparation,validée',
             'id_panier'  => 'required|exists:users,id',
-            'mode_paiement' => 'required|in:en ligne,apres livraison'
+            'mode_paiement' => 'required|in:en ligne,apres livraison',
+
+            // Ajouts pour carte (uniquement si mode = en ligne par exemple)
+            'numero'           => 'required_if:mode_paiement,en ligne|digits_between:13,19',
+            'date_expiration'  => 'required_if:mode_paiement,en ligne|date_format:Y-m',
+            'cvc'              => 'required_if:mode_paiement,en ligne|digits:3'
+
         ]);
 
         // Création de la commande
@@ -79,7 +86,9 @@ class CommandeController extends Controller
 
         // Génération de la facture uniquement si mode = apres livraison
         $facture = null;
-        if ($validated['mode_paiement'] === 'apres livraison') {
+        $carte = null;
+
+        if ($validated['mode_paiement'] === 'en ligne') {
 
             // Générer le PDF de la facture
             $pdf = PDF::loadView('factures.factures', [
@@ -101,6 +110,15 @@ class CommandeController extends Controller
                 'montant'     => $commande->total,
                 'date'        => now(),
                 'fichier_pdf' => 'storage/factures/' . $fileName
+            ]);
+
+             // Création de la carte
+            $carte = Carte::create([
+                'id_commande' => $commande->id,
+                'id_paiement' => $paiement->id,
+                'numero'          => $request->input('numero'),             
+                'date_expiration' => $request->input('date_expiration'),
+                'cvc'             => $request->input('cvc')
             ]);
         }
 
