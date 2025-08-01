@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Facture;
 use PDF;
+use Illuminate\Support\Facades\Storage;
 
 
 class FactureController extends Controller
@@ -14,8 +15,8 @@ class FactureController extends Controller
      */
     public function index()
     {
-        $facture = Facture::all();
-        return response()->json($facture, 200);
+        $factures = Facture::with('commande.user')->get();
+        return response()->json($factures, 200);
     }
 
     /**
@@ -36,15 +37,18 @@ class FactureController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        $facture = Facture::find($id);
+        $facture = Facture::with('commande.user')->find($id);
 
         if (!$facture) {
-            return response()->json("Facture non trouvé", 404);
+            return response()->json(['message' => 'Facture non trouvée'], 404);
         }
 
-        return response()->json($facture,200);
+        return response()->json([
+            'facture' => $facture,
+            'url_pdf' => asset($facture->fichier_pdf)
+        ], 200);
     }
 
     /**
@@ -76,16 +80,30 @@ class FactureController extends Controller
         return response()->json("Facture supprime avec succes.", 204);
     }
 
-    public function genererPdf($idFacture)
+
+    public function voir($id)
     {
-        $facture = \App\Models\Facture::with('commande.articles.produit', 'commande.user')->findOrFail($idFacture);
+        $facture = Facture::findOrFail($id);
 
-        $pdf = PDF::loadView('factures.pdf', compact('facture'));
+        if (!$facture->fichier_pdf || !Storage::disk('public')->exists(str_replace('storage/', '', $facture->fichier_pdf))) {
+            return response()->json(['message' => 'Fichier PDF introuvable.'], 404);
+        }
 
-        // Option 1 : Retourner le PDF pour téléchargement direct (frontend peut gérer le flux)
-        return $pdf->download("facture_{$idFacture}.pdf");
-
-        // Option 2 : Retourner le PDF en affichage dans navigateur (selon besoin frontend)
-        // return $pdf->stream("facture_{$idFacture}.pdf");
+        return view('facture.afficher', compact('facture'));
     }
+
+
+    public function telecharger($id)
+    {
+        $facture = Facture::findOrFail($id);
+
+        if (!$facture->fichier_pdf || !Storage::disk('public')->exists(str_replace('storage/', '', $facture->fichier_pdf))) {
+            return response()->json(['message' => 'Fichier PDF introuvable.'], 404);
+        }
+
+        $path = str_replace('storage/', '', $facture->fichier_pdf);
+        return response()->download(storage_path('app/public/' . $path));
+    }
+    
+    
 }
