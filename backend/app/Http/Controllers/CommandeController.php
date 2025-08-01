@@ -7,6 +7,7 @@ use App\Models\Commande;
 use App\Models\Paiement;
 use App\Models\Panier;
 use App\Models\Carte;
+use App\Models\Produit;
 use App\Http\Controllers\PanierController;
 use App\Models\Notification;
 use App\Models\User;
