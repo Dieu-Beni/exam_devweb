@@ -13,7 +13,7 @@ use App\Http\Controllers\Panier_produitController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ImageController;
 
-
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -39,7 +39,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::apiResource('users', UserController::class);//->middleware('auth:sanctum');
 Route::apiResource('paniers', PanierController::class);//->middleware('auth:sanctum');
 Route::apiResource('commandes', CommandeController::class);//->middleware('auth:sanctum');
-Route::apiResource('notifications', NotificationController::class);//->middleware('auth:sanctum');
+//Route::apiResource('notifications', NotificationController::class);//->middleware('auth:sanctum');
 Route::apiResource('categories', CategorieController::class);//->middleware('auth:sanctum');
 Route::apiResource('factures', FactureController::class);//->middleware('auth:sanctum');
 Route::apiResource('paiements', PaiementController::class);//->middleware('auth:sanctum');
@@ -51,6 +51,11 @@ Route::apiResource('images', ImageController::class);//->middleware('auth:sanctu
 
 
 Route::get('categories/{id}/produits', [CategorieController::class, 'produitsParCategorie']);
+
+Route::get('/commandes/utilisateur/{id}', [CommandeController::class, 'historiqueClient']);
+
+Route::get('/admin/statistiques', [AdminController::class, 'statistiques']);
+
 
 Route::post('/produits/{id}', [ProduitController::class, 'update']);
 
@@ -69,6 +74,8 @@ Route::post('/commandes', [CommandeController::class, 'store']);
 
 Route::get('factures/{id}/pdf', [FactureController::class, 'genererPdf']);//->middleware('auth:sanctum');
 
+Route::get('/notifications/{id_user}', [NotificationController::class, 'index']);
+
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
@@ -76,4 +83,14 @@ Route::post('login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::post('/logout', [AuthController::class, 'logout']);
+
+
+
+Route::get('/facture/{id}/voir', [FactureController::class, 'voir'])->name('facture.voir');
+Route::get('/facture/{id}/telecharger', [FactureController::class, 'telecharger'])->name('facture.telecharger');
+
+
+
+
+
 });
