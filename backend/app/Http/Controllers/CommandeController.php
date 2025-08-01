@@ -132,6 +132,13 @@ class CommandeController extends Controller
                 'statut'  => 'en cours'
             ]);
 
+        //mise a jour du stock du produit
+       foreach($panier_produit as $panier_pro){
+        $pro = Produit::findOrFail($panier_pro->id);
+        $pro->stock = $panier_pro->stock - $panier_pro->pivot->quantite;
+        $pro->save();
+       }
+
 
         return response()->json([
             'message'  => 'Commande, paiement, et facture (si applicable) créés.',
