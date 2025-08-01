@@ -122,12 +122,24 @@ class CommandeController extends Controller
             ]);
         }
 
+        $panier = Panier::findOrFail($validated['id_panier']);
+        $panier->statut = 'validé';
+        $panier->save();
+
+        $panier2 = Panier::create([
+                
+                'id_user' => $client->id,
+                'statut'  => 'en cours'
+            ]);
+
+
         return response()->json([
             'message'  => 'Commande, paiement, et facture (si applicable) créés.',
             'commande' => $commande,
             'paiement' => $paiement,
             'facture'  => $facture,
-            'facture_url' => $facture ? asset($facture->chemin_pdf) : null
+            'facture_url' => $facture ? asset($facture->chemin_pdf) : null,
+            'panier' => $panier2
         ], 201);
     }
 
