@@ -187,4 +187,26 @@ class CommandeController extends Controller
         $commande->delete();
         return response()->json("Commande supprime avec succes.", 204);
     }
+
+    public function historiqueClient($id)
+    {
+        $commandes = Commande::with([
+            'panier.produits',      // les produits de chaque panier
+            'paiement',             // paiement de la commande
+            'facture',              // facture s’il y en a
+        ])
+        ->where('id_user', $id)
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+        if ($commandes->isEmpty()) {
+            return response()->json(['message' => 'Aucune commande trouvée pour cet utilisateur.'], 404);
+        }
+
+        return response()->json([
+            'commandes' => $commandes
+        ], 200);
+    }
+
+
 }
