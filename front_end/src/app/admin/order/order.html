@@ -1,1 +1,83 @@
-<p>order works!</p>
+<div class="row">
+    <div [ngClass]="showAdd? 'col-10' : 'col-12'">
+        <div class="card">
+            <div class="card-header bg-primary">
+                <div class="row">
+                    <div class="col-6 text-center">
+                        <h1 class="text-center text-white">Liste des Commandes</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <table class="table table-bordered table-dark text-center">
+                        <thead>
+                            <tr>
+                                <th scope="col" rowspan="2">#</th>
+                                <th scope="col" colspan="3">UTILISATEUR</th>
+                                <th scope="col" rowspan="2">ADRESSE</th>
+                                <th scope="col" rowspan="2">TELEPHONE</th>
+                                <th scope="col" rowspan="2">MONTANT</th>
+                                <th scope="col" rowspan="2">STATUT</th>         
+                                <th scope="col" colspan="4" rowspan="2">ACTION</th>
+                            </tr>
+                            <tr>
+                                <th scope="col">NOM</th>
+                                <th scope="col">PRENOM</th>
+                                <th scope="col">EMAIL</th>                       
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let order of orders; let index = index;" >
+                                <th scope="row">{{index+1}}</th>
+                                <td>{{users[index].nom}} </td>
+                                <td>{{users[index].prenom}}</td>
+                                <td>{{users[index].email}} </td>
+                                <td> {{order.adresse}} </td>
+                                <td> {{order.telephone}} </td>
+                                <td> {{order.total}} </td>
+                                <td>{{order.statut}}</td>
+                                <td><a class="my-auto btn" (click)="navToRoute(order.id_panier)"><i class="fas fa-shopping-bag fa-1x text-white"></i></a></td>
+                                <td><a class="my-auto btn" (click)="onEdit(order)" ><i class="fas fa-edit fa-1x text-success"></i></a></td>
+                                <td><a class="my-auto btn" (click)="onDelete(order.id)" ><i class="fas fa-file fa-1x text-primary"></i></a></td>
+                                <td><a class="my-auto btn" (click)="onDelete(order.id)" ><i class="fas fa-times fa-1x text-danger"></i></a></td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-2" *ngIf="showAdd">
+        <div class="card">
+            <div class="card-header bg-primary">
+                <div class="row">
+                    <div class="col-12">
+                        Modification Commande
+                    </div>
+                    <div class="col-6 text-end">
+                        <button class="btn btn-sm btn-success" (click)="closePanel()">Fermer</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <label for="sku">Statut</label>
+                        <select class="form-select" [(ngModel)]="order.statut">
+                            <option value="en attente">En attente de livraison</option>
+                            <option value="en préparation">En cours de livraison</option>
+                            <option value="livrée">Livrée</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row pt-2">
+                    <div class="col-12 text-center">
+                        <button class="btn btn-primary" (click)="onUpdate()">Modifier</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

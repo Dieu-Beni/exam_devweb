@@ -17,6 +17,9 @@ export class Product {
   getProducts(){
     return this.http.get(Constant.API_END_POINT + Constant.METODS.PRODUCT);
   }
+  getProduct(id: number){
+    return this.http.get(Constant.API_END_POINT + Constant.METODS.PRODUCT + id);
+  }
   getAllProductsByCategory(id: number){
       return this.http.get(Constant.API_END_POINT + Constant.METODS.GET_PRODUCTS_BY_ID_CATEGORY + id);
   }

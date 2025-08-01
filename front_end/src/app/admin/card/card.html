@@ -1,1 +1,42 @@
-<p>card works!</p>
+        <!-- Cart Page Start -->
+        <div class="container-fluid py-5">
+            <div class="container py-5">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">Produit</th>
+                            <th scope="col">Nom</th>
+                            <th scope="col">Prix</th>
+                            <th scope="col">Quantite</th>
+                            <th scope="col">Total</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let pro of cardProducts">
+                                <th scope="row">
+                                    <div class="d-flex align-items-center">
+                                        <img [src]="'http://localhost:8000/storage/'+pro.image_url" class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="">
+                                    </div>
+                                </th>
+                                <td>
+                                    <p class="mb-0 mt-4">{{pro.nom}} </p>
+                                </td>
+                                <td>
+                                    <p class="mb-0 mt-4">{{pro.prix}} FCFA</p>
+                                </td>
+                                <td>
+                                    <div class="input-group quantity mt-4" style="width: 100px;">
+                                        <input type="text" class="form-control form-control-sm text-center border-0" value="{{pro.pivot.quantite}}">
+                                    </div>
+                                </td>
+                                <td>
+                                    <p class="mb-0 mt-4">{{pro.pivot.montant}} FCFA</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- Cart Page End -->

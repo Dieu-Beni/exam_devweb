@@ -1,10 +1,6 @@
 export const Constant = {
     API_END_POINT: 'api/api/',
     METODS: {
-        PRODUCTs: 'GetAllProducts',
-        CREATE_PRODUCT: 'CreateProduct',
-        UPDATE_PRODUCT: 'UpdateProduct',
-        DELETE_PRODUCT: 'DeleteProductById?id=',
 
         PRODUCT: 'produits/',
         USER: 'users/',
@@ -14,14 +10,11 @@ export const Constant = {
         CARD: 'panier/',
         CARD_PRODUCT: 'panier_produits/',
         CARD_PRODUCT_BY_ID_CARD: 'paniers/',
-
-        CREATE_CATEGORY: 'CreateNewCategory',
-        UPDATE_CATEGORY: 'categories/',
-        DELETE_CATEGORY: 'DeleteCategoryById?id=',
+        ORDER: 'commandes/',
+        ORDER_USER: '/commandes/utilisateur/',
         GET_PRODUCTS_BY_ID_CATEGORY: 'produits/by-categorie/',
 
-        GET_ALL_ORDER: '',
-        GET_ALL_CARTITEMS: 'GetAllCartItems',
+        FACTURE: 'factures/'
         
 
     }

@@ -37,7 +37,10 @@ export class ClientProducts implements OnInit{
     ngOnInit(): void {
       this.getAllProducts();
       const id = Number(sessionStorage.getItem('id_panier'));
-      this.getAllProductsCard(id);
+      if(sessionStorage.getItem('id_panier')){
+        this.getAllProductsCard(id);
+      }
+      
     }
   
     getAllProducts(){
@@ -84,16 +87,16 @@ export class ClientProducts implements OnInit{
     }
   
     navigateToRoute(id: number){
-      this.router.navigate(['/product', id])
+      this.router.navigate(['/detailPro', id])
     }
 
     addToCard(pro: any){
-      if(sessionStorage.getItem('access_token') && sessionStorage.getItem('id_panier')){
+      if(sessionStorage.getItem('access_token') && sessionStorage.getItem('id_panier') !== ''){
 
-        if(!this.categoryList.find(p => p.id === pro.id)){
+        if(!this.proCardList.find(p => p.id === pro.id)){
           this.numberItem++;
           this.sendToParent(this.numberItem);
-          this.categoryList.push(pro);
+          this.proCardList.push(pro);
           //console.log(this.categoryList)
           const panierPro:any = {
             'id_panier': sessionStorage.getItem('id_panier'),
@@ -108,12 +111,9 @@ export class ClientProducts implements OnInit{
           })
 
         }
-
-        //console.log(sessionStorage.getItem('access_token'), sessionStorage.getItem('id_panier'))
-        //alert("Utilisateur Connecte")
-        
       }else{
-        alert("Utilisateur non connecte")
+        alert("Utilisateur non connecte");
+        this.router.navigateByUrl('/login');
       }
     }
 
@@ -125,12 +125,13 @@ export class ClientProducts implements OnInit{
 
     getAllProductsCard(id: number){
       this.card.getCardProducts(id).subscribe((res: any) => {
-        console.log("la liste: ",res)
+        //console.log("la liste: ",res)
         this.proCardList = res.produits;
-        console.log(this.proCardList)
+        //console.log(this.proCardList)
         this.numberItem = this.proCardList.length;
-        console.log("num: ", this.numberItem)
+        //console.log("num: ", this.numberItem)
         this.sendToParent(this.numberItem)
       })
     }
+
 }

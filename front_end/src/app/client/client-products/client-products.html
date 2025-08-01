@@ -1,55 +1,95 @@
-<!-- Fruits Shop Start-->
-    <div class="container-fluid fruite py-5">
-        <div class="container py-5">
-            <h1 class="mb-4">Nos Produits</h1>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Customized Bootstrap Stylesheet -->
+    <!-- <link href="../landing/css/bootstrap.min.css" rel="stylesheet"> -->
+
+    <!-- Libraries Stylesheet -->
+        <link href="../landing/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+        <link href="../landing/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+
+
+</head>
+<body>
+    <!-- Fruits Shop Start-->
+ 
+    <div class="container-fluid fruite py-5 mt-5">
+        <div class="container py-5 col-12">
+            <h1 class="mb-4 text-center" style="color: #81c408;">Nos Produits</h1>
+
             <div class="row g-4">
-                <div class="col-md-4 col-lg-6 col-xl-3" *ngFor="let product of getPaginatedItems()">
-                    <div class="rounded position-relative fruite-item" >
-                        <div class="fruite-img">
-                            <img [src]="'http://localhost:8000/storage/' + product.image_url" class="img-fluid w-100 rounded-top" alt="">
-                        </div>
-                        <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
-                            style="top: 10px; left: 10px;">
-                            {{product.categorie.nom}}
-                        </div>
-                        <div class="p-4 border border-secondary border-top-0 rounded-bottom">
-                            <h4>{{product.nom}}</h4>
-                            <p> {{product.description}} </p>
-                            <div class="d-flex justify-content-between flex-lg-wrap">
-                                <p class="text-dark fs-5 fw-bold mb-0"> {{product.prix}} FCFA</p>
-                                <a (click)="addToCard(product)" class="btn border border-secondary rounded-pill px-3 text-primary"><i
-                                        class="fa fa-shopping-bag me-2 text-primary"></i> Ajouter au panier</a>
+                <div class="row g-4 justify-content-center">
+                    <div class="col-lg-4 col-md-6 col-sm-12" *ngFor="let product of getPaginatedItems()" >
+                        <div class="rounded position-relative fruite-item justify-content-between" >
+                            <div class="fruite-img" (click)="navigateToRoute(product.id)">
+                                <img [src]="'http://localhost:8000/storage/' + product.image_url" class="img-fluid w-100 rounded-top" style="height: 300px;" alt="">
+                            </div>
+                            <div class="text-white px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px; background-color: #FFB524;">
+                                {{product.categorie.nom}}
+                            </div>
+                            <div class="p-4  border-top-0 rounded-bottom position-relative" style="bottom: 0;">
+                                <h4>{{product.nom | slice: 0:20}}{{product.nom.length > 23 ? '...': ''}}</h4>
+                                <p> {{ product.description | slice: 0:80}}{{ product.description.length > 80 ? "..." : "" }}</p>
+                                <span>{{product.stock}} articles Disponibles</span>
+                                <div class="d-flex justify-content-between flex-lg-wrap">
+                                    <p class="text-dark fs-5 fw-bold mb-0"> {{product.prix}} FCFA</p>
+                                    <a *ngIf="product.stock > 0" (click)="addToCard(product)" class="btn border border-secondary rounded-pill px-3 " style="border-color: #FFB524; color: #81c408;"><i
+                                            class="fa fa-shopping-bag me-2 " style="color: #81c408;"></i> Ajouter au panier</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-12">
-                    <div class="pagination d-flex justify-content-center mt-5">
-                         <!-- Pagination Controls -->
-                        <nav *ngIf="totalPages > 1">
-                            <ul class="pagination justify-content-center">
-                            <li class="page-item" [class.disabled]="currentPage === 1">
-                                <button class="page-link" (click)="goToPage(currentPage - 1)">Précédent</button>
-                            </li>
+                    <div class="col-4">
+                        <div class="pagination d-flex justify-content-center mt-5">
+                            <!-- Pagination Controls -->
+                            <nav *ngIf="totalPages > 1">
+                                <ul class="pagination justify-content-center">
+                                <li class="page-item" [class.disabled]="currentPage === 1">
+                                    <button class="page-link" (click)="goToPage(currentPage - 1)">Précédent</button>
+                                </li>
 
-                            <li
-                                class="page-item"
-                                *ngFor="let page of pages"
-                                [class.active]="page === currentPage"
-                            >
-                                <button class="page-link" (click)="goToPage(page)">
-                                {{ page }}
-                                </button>
-                            </li>
+                                <li
+                                    class="page-item"
+                                    *ngFor="let page of pages"
+                                    [class.active]="page === currentPage"
+                                >
+                                    <button class="page-link" (click)="goToPage(page)">
+                                    {{ page }}
+                                    </button>
+                                </li>
 
-                            <li class="page-item" [class.disabled]="currentPage === totalPages">
-                                <button class="page-link" (click)="goToPage(currentPage + 1)">Suivant</button>
-                            </li>
-                            </ul>
-                        </nav>
+                                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                                    <button class="page-link" (click)="goToPage(currentPage + 1)">Suivant</button>
+                                </li>
+                                </ul>
+                            </nav>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 <!-- Fruits Shop End-->
+</body>
+</html>
+
+
+

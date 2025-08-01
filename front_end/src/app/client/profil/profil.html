@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Customized Bootstrap Stylesheet -->
+    <!-- <link href="../landing/css/bootstrap.min.css" rel="stylesheet"> -->
+
+    <!-- Libraries Stylesheet -->
+        <link href="../landing/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+        <link href="../landing/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid py-5 mt-5">
+        <h1 class="text-center mt-5" style="color: #81c408;">Mon profil</h1>
+        <div class="container col-lg-6">
+            <form class="py-5" [formGroup]="userForm" (ngSubmit)="onUpdate()" >
+                <div class="mb-3">
+                    <div class="row">
+                        <div class="col">
+                            <label for="" class="form-label">Nom</label>
+                            <input type="text" class="form-control" formControlName="nom">
+                            <div *ngIf="userForm.get('nom')?.invalid && userForm.get('nom')?.touched" class="text-danger">
+                            Le nom est requis.
+                            </div>
+                        </div>
+                        <div class="col">
+                            <label for="" class="form-label">Prenom</label>
+                            <input type="text" class="form-control" formControlName="prenom">
+                             <div *ngIf="userForm.get('prenom')?.invalid && userForm.get('prenom')?.touched" class="text-danger">
+                                Le prenom est requis.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="" class="form-label">Email</label>
+                            <input type="email" class="form-control" formControlName="email" >
+                            <div *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched" class="text-danger">
+                            L'email est requis.
+                            </div>
+                        </div>
+                        <div class="col">
+                            <label for="" class="form-label">Adresse</label>
+                            <input type="text" class="form-control" formControlName="adresse">
+                            <div *ngIf="userForm.get('adresse')?.invalid && userForm.get('adresse')?.touched" class="text-danger">
+                            L'address est requis.
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="mb-3">
+                    <div class="row">
+                        <div class="col">
+                            <label for="" class="form-label">Nouveau mot de passe</label>
+                            <input type="password" class="form-control" formControlName="password_confirmation">
+                            <div *ngIf="userForm.get('password_confirmation')?.invalid && userForm.get('password_confirmation')?.touched" class="text-danger">
+                            Le mot de passe est requis.
+                            </div>
+                        </div>
+                        <div class="col">
+                            <label for="" class="form-label">Confirmation mot de passe</label>
+                            <input type="password" class="form-control" formControlName="password" >
+                            <div *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched" class="text-danger">
+                            Le mot de passe est requis.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button style="background-color: #81c408;" type="submit" class="btn btn-primary col-12">Modifier mes informations</button>
+            </form>
+        </div>
+    </div>
+   
+</body>
+</html>

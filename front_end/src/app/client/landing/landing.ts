@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { Product } from '../../services/products/product';
 import { Shared } from '../../services/shared/shared';
 
 @Component({
   selector: 'app-landing',
-  imports: [CommonModule, RouterOutlet],
+  imports: [CommonModule, RouterOutlet, RouterLink],
   templateUrl: './landing.html',
   styleUrl: './landing.css'
 })
@@ -14,6 +14,7 @@ export class Landing implements OnInit{
 
   categoryList: any[] = [];
   numberItem: number = 0;
+  id_user: number = 0;
 
   constructor(private prodSvc: Product, private router: Router, private shared: Shared){
     
@@ -26,6 +27,7 @@ export class Landing implements OnInit{
       }
     })
     this.getAllCategories();
+    this.id_user = Number(sessionStorage.getItem('user_id'));
   }
 
   getAllCategories(){
@@ -42,6 +44,12 @@ export class Landing implements OnInit{
   }
   navToRoute(str: string){
     this.router.navigate([str])
+  }
+
+  logout(){
+    sessionStorage.clear();
+    alert('Deconnexion reussie');
+    this.ngOnInit();
   }
 
 }

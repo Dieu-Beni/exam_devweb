@@ -29,9 +29,9 @@ export class Login {
         sessionStorage.setItem("user_id", res.user.id);
         sessionStorage.setItem("email", res.user.email);
         sessionStorage.setItem("access_token", res.access_token);
-        sessionStorage.setItem("id_panier", res.panier_id);
 
         if(res.user.role == "client"){
+          sessionStorage.setItem("id_panier", res.panier_id);
           this.router.navigateByUrl("/");
 
         }else this.router.navigateByUrl("/admin");

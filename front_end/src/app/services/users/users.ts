@@ -27,5 +27,9 @@ export class Users {
   delete(id: number){
     return this.http.delete(Constant.API_END_POINT + Constant.METODS.USER + id);
   }
+
+  getUser(id: number){
+    return this.http.get(Constant.API_END_POINT + Constant.METODS.USER + id);
+  }
   
 }
