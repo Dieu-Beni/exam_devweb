@@ -43,11 +43,6 @@ class CommandeController extends Controller
             'id_panier'  => 'required|exists:paniers,id',
             'mode_paiement' => 'required|in:en ligne,apres livraison',
 
-            // Ajouts pour carte (uniquement si mode = en ligne par exemple)
-            'numero'           => 'required_if:mode_paiement,en ligne|digits_between:13,19',
-            'date_expiration'  => 'required_if:mode_paiement,en ligne|date_format:Y-m',
-            'cvc'              => 'required_if:mode_paiement,en ligne|digits:3'
-
         ]);
 
         // Création de la commande
