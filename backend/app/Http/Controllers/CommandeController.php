@@ -39,7 +39,7 @@ class CommandeController extends Controller
             'quantite'   => 'required|integer|min:1',
             'total'      => 'required|numeric|min:0',
             'statut'     => 'required|in:en attente,en préparation,validée',
-            'id_panier'  => 'required|exists:users,id',
+            'id_panier'  => 'required|exists:paniers,id',
             'mode_paiement' => 'required|in:en ligne,apres livraison',
 
             // Ajouts pour carte (uniquement si mode = en ligne par exemple)
