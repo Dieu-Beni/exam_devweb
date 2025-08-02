@@ -66,7 +66,7 @@ class CommandeController extends Controller
         $clients->notify(new CommandeValideeNotification($commande));
 
         // Récupérer l’admin
-        $admins = User::where('role', 'admin')->all();
+        $admins = User::where('role', 'admin')->get();
 
         if ($admins) {
             // Envoi du mail à l'admin
@@ -201,8 +201,10 @@ class CommandeController extends Controller
             $client = $commande->user; // relation user() dans le modèle Commande
 
             if ($commande->statut === 'validée' && $client) {
-        $client->notify(new CommandeValideeNotification($commande));
-    }
+                $client->notify(new CommandeValideeNotification($commande));
+            }else{
+                $client->notify(new CommandeStatutNotification($commande));
+            }
 
     // 2. Paiement et facture si la commande est livrée
     if ($commande->statut === 'livrée') {
