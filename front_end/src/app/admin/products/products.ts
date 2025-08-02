@@ -26,6 +26,9 @@ export class Products implements OnInit{
   productList: any [] = [];
   selectedFile: File | null = null;
   productForm: FormGroup;
+  currentPage: number = 1;
+  pageSize: number = 12;
+  pages: number[] = [];
 
   constructor(private productSvc: Product, private fb: FormBuilder){
     this.productForm = fb.group({
@@ -59,11 +62,11 @@ export class Products implements OnInit{
   getAllProducts(){
     this.productSvc.getAllProducts().subscribe((res: any) => {
       this.productList = res;
+      this.updatePagination();
     })
   }
 
   onUpdate(){
-    debugger;
     const formData = new FormData();
     formData.append('id', this.productsOjt.id);
     formData.append('nom', this.productForm.value.nom);
@@ -171,5 +174,28 @@ export class Products implements OnInit{
 
     }
   }
+
+  get totalPages(): number {
+      return Math.ceil(this.productList.length / this.pageSize);
+    }
+  
+    getPaginatedusers(): any[] {
+      const startIndex = (this.currentPage - 1) * this.pageSize;
+      return this.productList.slice(startIndex, startIndex + this.pageSize);
+    }
+  
+    goToPage(page: number): void {
+      if (page >= 1 && page <= this.totalPages) {
+        this.currentPage = page;
+        this.updatePagination();
+      }
+    }
+  
+    updatePagination(): void {
+      this.pages = [];
+      for (let i = 1; i <= this.totalPages; i++) {
+        this.pages.push(i);
+      }
+    }
 
 }

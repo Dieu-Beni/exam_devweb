@@ -37,6 +37,9 @@ export class Order implements OnInit{
 
   showAdd: boolean = false;
   orders: any[] = [];
+  currentPage: number = 1;
+  pageSize: number = 7;
+  pages: number[] = [];
 
   constructor(private orderSvc: OrderService, private userSvc: Users, private router: Router){}
 
@@ -45,14 +48,16 @@ export class Order implements OnInit{
   }
 
   getAllOrders(){
-    this.orderSvc.getOrders().subscribe((res: any) => {
-      this.orders = res;
-      this.orders.forEach(or => {
-        this.userSvc.getUser(or.id_user).subscribe((res2: any) => {
-          this.users.push(res2);
-      });
-      })
-
+    this.orderSvc.getOrders().subscribe({
+      next: (res: any) => {
+        console.log(res)
+        this.orders = res;
+        this.updatePagination();
+      },
+      error: (err) => {
+        console.error(err.error);
+        alert(err.error.message);
+      }
     })
   }
 
@@ -64,21 +69,31 @@ export class Order implements OnInit{
   }
 
   onUpdate(){
-    this.orderSvc.updateOrder(this.order).subscribe((res: any) => {
-      if(res){
+    this.orderSvc.updateOrder(this.order).subscribe({
+      next: (res: any) => {
         alert('Statut modifie !');
+      },
+      error: (err) => {
+        console.error(err.error);
+        alert(err.error.message);
       }
     })
   }
 
   getUser(id: number, us: any){
-    this.userSvc.getUser(id).subscribe((res: any) => {
+    this.userSvc.getUser(id).subscribe({
+      next: (res: any) => {
        us= res;
+      },
+      error: (err) =>{
+        console.error(err.error);
+        alert(err.error.message);
+      }
     });
   }
 
-  navToRoute(id: number){
-    this.router.navigate(['admin/cards', id])
+  navToRoute(id: number, path: string){
+    this.router.navigate([path, id])
   }
   onEdit(pro: any){
     this.showPanel();
@@ -88,11 +103,42 @@ export class Order implements OnInit{
   onDelete(id: number){
     const conf = confirm("Voulez vous vraiment suprimer cette commande?");
     if(conf){
-      this.orderSvc.deleteOrder(id).subscribe((res: any) =>{
-        alert('Commande suprimee !');
-        this.getAllOrders();
+      this.orderSvc.deleteOrder(id).subscribe({
+        next:(res: any) =>{
+          alert('Commande suprimee !');
+          this.getAllOrders();
+        },
+        error: (err) =>{
+          console.error(err.error);
+          alert(err.error.message);
+        }
       })
     }
   }
+
+  get totalPages(): number {
+      return Math.ceil(this.orders.length / this.pageSize);
+    }
+  
+    getPaginatedusers(): any[] {
+      const startIndex = (this.currentPage - 1) * this.pageSize;
+      return this.orders.slice(startIndex, startIndex + this.pageSize);
+    }
+  
+    goToPage(page: number): void {
+      if (page >= 1 && page <= this.totalPages) {
+        this.currentPage = page;
+        this.updatePagination();
+      }
+    }
+  
+    updatePagination(): void {
+      this.pages = [];
+      for (let i = 1; i <= this.totalPages; i++) {
+        this.pages.push(i);
+      }
+    }
+
+    
 
 }

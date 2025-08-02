@@ -45,21 +45,17 @@ export class Register {
       this.user.password_confirmation = this.userForm.value.password;
       this.user.adresse = this.userForm.value.adresse;
 
-      this.userSvc.saveUser(this.user).subscribe((res: any) => {
-        //console.log(res)
-        if(res && res.id){
+      this.userSvc.saveUser(this.user).subscribe({
+        next: (res: any) => {
           alert("Compte Cree");
           sessionStorage.setItem("user_name", this.user.nom);
           sessionStorage.setItem("role", this.user.role);
           this.router.navigate(['/login'])
-
-        }else{
-          alert("Erreur de creation");
-          //console.log(res.message)
+        },
+        error: (err) => {
+          alert(err.error.message);
         }
-      })
-      
-      //console.log(this.user)
+      });
     }else{
       this.userForm.markAllAsTouched();
     }

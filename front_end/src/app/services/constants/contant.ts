@@ -14,7 +14,9 @@ export const Constant = {
         ORDER_USER: '/commandes/utilisateur/',
         GET_PRODUCTS_BY_ID_CATEGORY: 'produits/by-categorie/',
 
-        FACTURE: 'factures/'
+        FACTURE: 'factures/',
+        STATS: 'statistiques/',
+        PAYMENT: 'paiements/'
         
 
     }

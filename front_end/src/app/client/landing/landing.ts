@@ -49,7 +49,7 @@ export class Landing implements OnInit{
   logout(){
     sessionStorage.clear();
     alert('Deconnexion reussie');
-    this.ngOnInit();
+    this.router.navigate(['/']);
   }
 
 }

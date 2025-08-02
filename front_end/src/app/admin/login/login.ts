@@ -19,11 +19,10 @@ export class Login {
   constructor(private router: Router, private userSvc: Users){}
 
   onLogin(){
-    this.userSvc.login(this.loginObject).subscribe(
-      (res: any) => {
-      if(res && res.access_token){
-        console.log("La reponse ",res);
-        alert("utilisateur connecte");
+    if(this.loginObject.email !== '' && this.loginObject.password !== ''){
+      this.userSvc.login(this.loginObject).subscribe({
+      next: (res: any) =>{
+        alert("Connextion reussie !");
         sessionStorage.setItem("user_name", res.user.nom);
         sessionStorage.setItem("role", res.user.role);
         sessionStorage.setItem("user_id", res.user.id);
@@ -35,11 +34,13 @@ export class Login {
           this.router.navigateByUrl("/");
 
         }else this.router.navigateByUrl("/admin");
-      }else{
-        alert("Erreur utilisateur non reconnu")
-        console.log(res)
-      }
-    })
+        },
+        error: (err) => {
+          alert(err.error.message)
+        }
+      });
+    }else alert('Tous les champs sont obligatoires !')
+    
     
   }
 }

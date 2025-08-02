@@ -15,6 +15,10 @@ import { Order } from './admin/order/order';
 import { Card } from './admin/card/card';
 import { CustomerOrders } from './client/customer-orders/customer-orders';
 import { Profil } from './client/profil/profil';
+import { Dashbord } from './admin/dashbord/dashbord';
+import { adminGuard } from './guards/admin-guard';
+import { clientGuard } from './guards/client-guard';
+import { Paiement } from './admin/paiement/paiement';
 
 export const routes: Routes = [
     {
@@ -32,6 +36,7 @@ export const routes: Routes = [
     },
     {
         path: '',
+        //canActivateChild: [clientGuard],
         component: Landing,
         children:[
             {
@@ -44,10 +49,12 @@ export const routes: Routes = [
             },
             {
                 path: 'customer_cart',
+                canActivate: [clientGuard],
                 component: CustomerCart
             },
             {
                 path: 'checkout',
+                canActivate: [clientGuard],
                 component: Checkout
             },
             {
@@ -56,18 +63,25 @@ export const routes: Routes = [
             },
             {
                 path: 'customer_orders',
+                canActivate: [clientGuard],
                 component: CustomerOrders
             },
             {
                 path: 'profil',
+                canActivate: [clientGuard],
                 component: Profil
             }
         ]
     },
     {
         path: 'admin',
+        canActivateChild: [adminGuard],
         component: Layout,
         children:[
+            {
+                path: '',
+                component: Dashbord
+            },
             {
                 path: 'products',
                 component: Products
@@ -87,6 +101,10 @@ export const routes: Routes = [
             {
                 path: 'cards/:id',
                 component: Card
+            },
+            {
+                path: 'payment/:id',
+                component: Paiement
             }
         ]
     }

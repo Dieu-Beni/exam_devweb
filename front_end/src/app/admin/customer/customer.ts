@@ -22,6 +22,9 @@ export class Customer implements OnInit{
     role: ''
   }
   users: any [] = [];
+  currentPage: number = 1;
+  pageSize: number = 12;
+  pages: number[] = [];
 
   constructor(private userSvc: Users){}
 
@@ -51,6 +54,7 @@ export class Customer implements OnInit{
   getAllUsers(){
     this.userSvc.getAll().subscribe((res:any) => {
       this.users = res;
+      this.updatePagination();
     })
   }
 
@@ -96,6 +100,28 @@ export class Customer implements OnInit{
         alert('Erreur de creation !')
       }
     })
-
   }
+
+  get totalPages(): number {
+      return Math.ceil(this.users.length / this.pageSize);
+    }
+  
+    getPaginatedusers(): any[] {
+      const startIndex = (this.currentPage - 1) * this.pageSize;
+      return this.users.slice(startIndex, startIndex + this.pageSize);
+    }
+  
+    goToPage(page: number): void {
+      if (page >= 1 && page <= this.totalPages) {
+        this.currentPage = page;
+        this.updatePagination();
+      }
+    }
+  
+    updatePagination(): void {
+      this.pages = [];
+      for (let i = 1; i <= this.totalPages; i++) {
+        this.pages.push(i);
+      }
+    }
 }

@@ -28,18 +28,18 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let order of orders; let index = index;" >
+                            <tr *ngFor="let order of getPaginatedusers(); let index = index;" >
                                 <th scope="row">{{index+1}}</th>
-                                <td>{{users[index].nom}} </td>
-                                <td>{{users[index].prenom}}</td>
-                                <td>{{users[index].email}} </td>
+                                <td>{{order.user.nom}} </td>
+                                <td>{{order.user.prenom}}</td>
+                                <td>{{order.user.email}} </td>
                                 <td> {{order.adresse}} </td>
                                 <td> {{order.telephone}} </td>
                                 <td> {{order.total}} </td>
                                 <td>{{order.statut}}</td>
-                                <td><a class="my-auto btn" (click)="navToRoute(order.id_panier)"><i class="fas fa-shopping-bag fa-1x text-white"></i></a></td>
+                                <td><a class="my-auto btn" (click)="navToRoute(order.id_panier, 'admin/cards')"><i class="fas fa-shopping-bag fa-1x text-white"></i></a></td>
                                 <td><a class="my-auto btn" (click)="onEdit(order)" ><i class="fas fa-edit fa-1x text-success"></i></a></td>
-                                <td><a class="my-auto btn" (click)="onDelete(order.id)" ><i class="fas fa-file fa-1x text-primary"></i></a></td>
+                                <td><a class="my-auto btn" (click)="navToRoute(order.id, 'admin/payment')" ><i class="fas fa-wallet fa-1x text-primary"></i></a></td>
                                 <td><a class="my-auto btn" (click)="onDelete(order.id)" ><i class="fas fa-times fa-1x text-danger"></i></a></td>
 
                             </tr>
@@ -67,8 +67,9 @@
                         <label for="sku">Statut</label>
                         <select class="form-select" [(ngModel)]="order.statut">
                             <option value="en attente">En attente de livraison</option>
-                            <option value="en préparation">En cours de livraison</option>
+                            <option value="expédiée">Expédiée</option>
                             <option value="livrée">Livrée</option>
+                            <option value="annulée">Annulée</option>
                         </select>
                     </div>
                 </div>
@@ -78,6 +79,28 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="pagination d-flex justify-content-center">
+            <!-- Pagination Controls -->
+            <nav *ngIf="totalPages > 1">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" [class.disabled]="currentPage === 1">
+                        <button class="page-link" (click)="goToPage(currentPage - 1)">Précédent</button>
+                    </li>
+    
+                    <li class="page-item" *ngFor="let page of pages" [class.active]="page === currentPage">
+                        <button class="page-link" (click)="goToPage(page)">
+                            {{ page }}
+                        </button>
+                    </li>
+    
+                    <li class="page-item" [class.disabled]="currentPage === totalPages">
+                        <button class="page-link" (click)="goToPage(currentPage + 1)">Suivant</button>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 </div>

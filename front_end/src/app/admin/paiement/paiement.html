@@ -1,0 +1,80 @@
+<div class="row">
+    <div [ngClass]="showAdd? 'col-9' : 'col-12'">
+        <div class="card">
+            <div class="card-header bg-primary">
+                <div class="row">
+                    <div class="col-6 text-center">
+                        <h1 class="text-center text-white">Paiement</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <table class="table table-bpaiemented table-dark text-center table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col" rowspan="2">#</th>
+                                <th scope="col" colspan="2">PAIEMENT</th>        
+                                <th scope="col" colspan="3" *ngIf="carte">CARTE</th>        
+                                <th scope="col" colspan="2" rowspan="2">ACTION</th>
+                            </tr>
+                            <tr>
+                                 <th scope="col">MODE</th>
+                                <th scope="col">STATUT</th>
+                                <th scope="col" *ngIf="carte">NUMERO</th>
+                                <th scope="col" *ngIf="carte">CVC</th>                       
+                                <th scope="col" *ngIf="carte">DATE EXPIRATION</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr >
+                                <th scope="row">{{1}}</th>
+                                <td>{{paiement.mode}} </td>
+                                <td>{{paiement.statut}}</td>
+                                <td *ngIf="carte">{{carte? carte.numero: ''}} </td>
+                                <td *ngIf="carte"> {{carte? carte.cvc: ''}} </td>
+                                <td *ngIf="carte"> {{carte? carte.date_expiration: ''}} </td>
+                                <td>
+                                    <a *ngIf="facture" class="my-auto btn" [href]="'http://localhost:8000/'+ facture.fichier_pdf" [download]="'facture_'+facture.id+'.pdf'" target="_blank" rel="noopener noreferrer">
+                                        <i class="fas fa-file fa-1x text-primary"></i>
+                                    </a>
+                                </td>
+                                <td><a class="my-auto btn" (click)="onEdit(paiement)" ><i class="fas fa-edit fa-1x text-success"></i></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-3" *ngIf="showAdd">
+        <div class="card">
+            <div class="card-header bg-primary">
+                <div class="row">
+                    <div class="col-6 text-white">
+                        Modification paiement
+                    </div>
+                    <div class="col-6 text-end">
+                        <button class="btn btn-sm btn-success" (click)="closePanel()">Fermer</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <label for="sku">Statut</label>
+                        <select class="form-select" [(ngModel)]="paiement.statut">
+                            <option value="payé">Payé</option>
+                            <option value="non payé">Non Payé</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row pt-2">
+                    <div class="col-12 text-center">
+                        <button class="btn btn-primary">Modifier</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

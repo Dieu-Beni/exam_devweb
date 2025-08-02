@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Constant } from '../constants/contant';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -32,5 +33,8 @@ export class OrderService {
     return this.http.get(Constant.API_END_POINT + Constant.METODS.FACTURE + id + '/pdf');
   }
 
+  getStats(): Observable<any>{
+    return this.http.get(Constant.API_END_POINT + Constant.METODS.STATS);
+  }
 
 }

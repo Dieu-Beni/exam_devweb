@@ -1,0 +1,39 @@
+<div class="container my-5">
+  <h2 class="text-center mb-4">Statistiques</h2>
+
+  <!-- Chiffre d'affaires par mois -->
+  <div class="card mb-5 p-4">
+    <h5 class="mb-3">Chiffre d'affaires par mois</h5>
+    <div style="height: 400px;">
+      <canvas baseChart
+              [data]="monthlyChartData"
+              [options]="chartOptions"
+              [type]="'bar'">
+      </canvas>
+    </div>
+  </div>
+
+  <!-- Chiffre d'affaires par année -->
+  <div class="card mb-5 p-4">
+    <h5 class="mb-3">Chiffre d'affaires par année</h5>
+    <div style="height: 400px; ">
+      <canvas baseChart
+              [data]="yearlyChartData"
+              [options]="chartOptions"
+              [type]="'bar'">
+      </canvas>
+    </div>
+  </div>
+
+  <!-- Produits les plus vendus -->
+  <div class="card mb-5 p-4">
+    <h5 class="mb-3">Produits les plus vendus</h5>
+    <div style="height: 400px; ">
+      <canvas baseChart
+              [data]="productChartData"
+              [options]="chartOptions"
+              [type]="'pie'">
+      </canvas>
+    </div>
+  </div>
+</div>
