@@ -29,7 +29,7 @@ class PaiementNotification extends Notification
         return (new MailMessage)
             ->subject('Paiement effectué')
             ->greeting("Bonjour {$notifiable->name},")
-            ->line("Votre compte a ete debité de : (#{$this->paiement->montant}) FCFA")
+            ->line("Votre compte a ete debité de : {$this->paiement->total} FCFA")
             ->line('Nous vous remercions pour votre confiance.')
             ->salutation('À bientôt !');
 
