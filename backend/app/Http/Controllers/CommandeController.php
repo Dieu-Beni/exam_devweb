@@ -62,19 +62,7 @@ class CommandeController extends Controller
 
         
 
-        $clients = User::findOrFail($validated['id_user']);
-        $clients->notify(new CommandeValideeNotification($commande));
-
-        // Récupérer l’admin
-        $admins = User::where('role', 'admin')->get();
-
-        if ($admins) {
-            // Envoi du mail à l'admin
-            foreach($admins as $admin){
-
-                $admin->notify(new CommandeClientNotification($commande, $clients));
-            }
-        }
+      
         
 
         // Récupérer l'utilisateur (client)
@@ -117,7 +105,7 @@ class CommandeController extends Controller
                 'cvc'             => $request->input('cvc')
             ]);
 
-            $clients->notify(new PaiementNotification($commande));
+            
 
         }
         // Générer le PDF de la facture
@@ -158,6 +146,25 @@ class CommandeController extends Controller
         $pro->stock = $panier_pro->stock - $panier_pro->pivot->quantite;
         $pro->save();
        }
+
+         $clients = User::findOrFail($validated['id_user']);
+        $clients->notify(new CommandeValideeNotification($commande));
+
+        // Récupérer l’admin
+        $admins = User::where('role', 'admin')->get();
+
+        if ($admins) {
+            // Envoi du mail à l'admin
+            foreach($admins as $admin){
+
+                $admin->notify(new CommandeClientNotification($commande, $clients));
+            }
+        }
+
+       if ($validated['mode_paiement'] === 'en ligne') {
+       $clients->notify(new PaiementNotification($commande));
+       }
+
 
 
         return response()->json([
