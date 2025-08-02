@@ -10,6 +10,7 @@ use App\Models\Carte;
 use App\Models\Produit;
 use App\Http\Controllers\PanierController;
 use App\Notifications\CommandeClientNotification;
+use App\Notifications\CommandeStatutNotification;
 use App\Notifications\CommandeValideeNotification;
 use App\Notifications\PaiementNotification;
 use Illuminate\Support\Facades\Notification;
@@ -42,7 +43,7 @@ class CommandeController extends Controller
             'telephone'  => 'required|string|max:20',
             'quantite'   => 'required|integer|min:1',
             'total'      => 'required|numeric|min:0',
-            'statut'     => 'required|in:en attente,en préparation,validée',
+            'statut'     => 'required|in:en attente,expediée,livrée annulée',
             'id_panier'  => 'required|exists:paniers,id',
             'mode_paiement' => 'required|in:en ligne,apres livraison',
 
@@ -199,25 +200,50 @@ class CommandeController extends Controller
 
             $client = $commande->user; // relation user() dans le modèle Commande
 
-            if ($client) {
-                $client->notify(new CommandeStatutNotification($commande));
-            }
-        
-        return response()->json($commande,200);
+            if ($commande->statut === 'validée' && $client) {
+        $client->notify(new CommandeValideeNotification($commande));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        $commande = Commande::find($id);
-        if (!$commande) {
-            return response()->json("Commande non trouvé", 404);
-        }
+    // 2. Paiement et facture si la commande est livrée
+    if ($commande->statut === 'livrée') {
+        $paiement = $commande->paiement; // relation paiement() dans Commande
 
-        $commande->delete();
-        return response()->json("Commande supprime avec succes.", 204);
+        if ($paiement) {
+            $paiement->statut = 'payé';
+            $paiement->save();
+
+            // Recharger les produits du panier
+            $panierProduits = app(PanierController::class)->produitsParPanier2($commande->id_panier);
+
+            // Génération nouvelle facture PDF
+            $pdf = \PDF::loadView('factures.factures', [
+                'commande' => $commande,
+                'paiement' => $paiement,
+                'produits' => $panierProduits,
+                'client' => $client
+            ]);
+
+            $fileName = 'facture_commande_' . $commande->id . '_'. time() . '.pdf';
+            \Storage::disk('public')->put('factures/' . $fileName, $pdf->output());
+
+            // Mise à jour ou création de la facture
+            $facture = $commande->facture;
+            if ($facture) {
+                $facture->update([
+                    'montant'     => $commande->total,
+                    'date'        => now(),
+                    'fichier_pdf' => 'storage/factures/' . $fileName
+                ]);
+            } else {
+                \App\Models\Facture::create([
+                    'id_commande' => $commande->id,
+                    'montant'     => $commande->total,
+                    'date'        => now(),
+                    'fichier_pdf' => 'storage/factures/' . $fileName
+                ]);
+            }
+        }
+    }
     }
 
     public function historiqueClient($id)
@@ -256,6 +282,31 @@ class CommandeController extends Controller
         'utilisateurs' => $utilisateurs
     ], 200);
 }
+
+    public function paiementParCommande($id_commande)
+    {
+        // Récupérer le paiement lié à la commande
+        $paiement = Paiement::where('id_commande', $id_commande)->first();
+
+        if (!$paiement) {
+            return response()->json(['message' => 'Aucun paiement trouvé pour cette commande.'], 404);
+        }
+
+        // Récupérer la carte liée au paiement (si elle existe)
+        $carte = Carte::where('id_commande', $id_commande)
+                    ->where('id_paiement', $paiement->id)
+                    ->first();
+
+        // Récupérer la facture liée à la commande (si elle existe)
+        $facture = Facture::where('id_commande', $id_commande)->first();
+
+        return response()->json([
+            'paiement' => $paiement,
+            'carte'    => $carte,
+            'facture'  => $facture
+            
+        ], 200);
+    }
 
 
 

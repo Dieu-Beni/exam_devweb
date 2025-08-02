@@ -34,7 +34,7 @@ class Commande extends Model
 
     public function carte()
     {
-        return $this->hasOne(Carte::class, 'id_carte');
+        return $this->hasOne(Carte::class, 'id_commande');
     }
 
     public function articles()

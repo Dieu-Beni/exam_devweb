@@ -51,6 +51,9 @@ Route::apiResource('images', ImageController::class);//->middleware('auth:sanctu
 
 Route::get('commandes-par-utilisateurs', [CommandeController::class, 'commandesParUtilisateurs']);
 
+Route::get('/commandes/{id}/paiement', [CommandeController::class, 'paiementParCommande']);
+
+
 
 Route::get('categories/{id}/produits', [CategorieController::class, 'produitsParCategorie']);
 
