@@ -24,7 +24,7 @@ return new class extends Migration
     {
         Schema::table('commandes', function (Blueprint $table) {
             // Revenir à l’ancien type si besoin (ex. string)
-            $table->enum('statut', ['non payé', 'payé'])->default('non payé')->change();
+            $table->enum('statut', ['en attente', 'en préparation', 'livrée'])->default('en attente')->change();
         });
     }
 };
