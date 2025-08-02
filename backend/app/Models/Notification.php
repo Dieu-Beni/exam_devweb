@@ -8,7 +8,7 @@ use App\Models\User;
 
 class Notification extends Model
 {
-    protected $fillable = ['id_user', 'message'];
+    protected $fillable = ['id_user', 'message','titre'];
 
     public function utilisateur()
     {

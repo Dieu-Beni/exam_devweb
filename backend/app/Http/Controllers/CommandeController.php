@@ -9,7 +9,10 @@ use App\Models\Panier;
 use App\Models\Carte;
 use App\Models\Produit;
 use App\Http\Controllers\PanierController;
-use App\Models\Notification;
+use App\Notifications\CommandeClientNotification;
+use App\Notifications\CommandeValideeNotification;
+use App\Notifications\PaiementNotification;
+use Illuminate\Support\Facades\Notification;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
@@ -23,7 +26,7 @@ class CommandeController extends Controller
      */
     public function index()
     {
-        $commande = Commande::all();
+        $commande = Commande::with('user')->get();
         return response()->json($commande, 200);
     }
 
@@ -56,6 +59,23 @@ class CommandeController extends Controller
             'id_panier' => $validated['id_panier'],
         ]);
 
+        
+
+        $clients = User::findOrFail($validated['id_user']);
+        $clients->notify(new CommandeValideeNotification($commande));
+
+        // Récupérer l’admin
+        $admins = User::where('role', 'admin')->all();
+
+        if ($admins) {
+            // Envoi du mail à l'admin
+            foreach($admins as $admin){
+
+                $admin->notify(new CommandeClientNotification($commande, $clients));
+            }
+        }
+        
+
         // Récupérer l'utilisateur (client)
         $client = $commande->user; /* relation user() à définir dans le modèle Commande
 
@@ -86,29 +106,8 @@ class CommandeController extends Controller
 
         if ($validated['mode_paiement'] === 'en ligne') {
 
-            // Générer le PDF de la facture
-            $pdf = PDF::loadView('factures.factures', [
-                'commande' => $commande,
-                'paiement' => $paiement,
-                'produits' => $panier_produit,
-                'client' => $client
-            ]);
-
-            // Nom de fichier
-            $fileName = 'facture_commande_' . $commande->id . '_' . time() . '.pdf';
-
-            // Sauvegarde dans storage/app/public/factures
-            Storage::disk('public')->put('factures/' . $fileName, $pdf->output());
-
-            // Création de la facture
-            $facture = Facture::create([
-                'id_commande' => $commande->id,
-                'montant'     => $commande->total,
-                'date'        => now(),
-                'fichier_pdf' => 'storage/factures/' . $fileName
-            ]);
-
-             // Création de la carte
+            
+            // Création de la carte
             $carte = Carte::create([
                 'id_commande' => $commande->id,
                 'id_paiement' => $paiement->id,
@@ -116,7 +115,31 @@ class CommandeController extends Controller
                 'date_expiration' => $request->input('date_expiration'),
                 'cvc'             => $request->input('cvc')
             ]);
+
+            $clients->notify(new PaiementNotification($commande));
+
         }
+        // Générer le PDF de la facture
+        $pdf = PDF::loadView('factures.factures', [
+            'commande' => $commande,
+            'paiement' => $paiement,
+            'produits' => $panier_produit,
+            'client' => $client
+        ]);
+
+        // Nom de fichier
+        $fileName = 'facture_commande_' . $commande->id . '_' . time() . '.pdf';
+
+        // Sauvegarde dans storage/app/public/factures
+        Storage::disk('public')->put('factures/' . $fileName, $pdf->output());
+
+        // Création de la facture
+        $facture = Facture::create([
+            'id_commande' => $commande->id,
+            'montant'     => $commande->total,
+            'date'        => now(),
+            'fichier_pdf' => 'storage/factures/' . $fileName
+        ]);
 
         $panier = Panier::findOrFail($validated['id_panier']);
         $panier->statut = 'validé';
@@ -171,6 +194,15 @@ class CommandeController extends Controller
         }
 
         $commande->update($request->all());
+
+        // Si le statut est "validée", on envoie un mail au client
+
+            $client = $commande->user; // relation user() dans le modèle Commande
+
+            if ($client) {
+                $client->notify(new CommandeStatutNotification($commande));
+            }
+        
         return response()->json($commande,200);
     }
 
@@ -207,6 +239,24 @@ class CommandeController extends Controller
             'commandes' => $commandes
         ], 200);
     }
+
+    public function commandesParUtilisateurs()
+{
+    // Vérifie que l'utilisateur est admin (optionnel selon ton système d'auth)
+   
+
+    // On récupère les utilisateurs avec leurs commandes associées
+    $utilisateurs = \App\Models\User::whereHas('commandes')
+        ->with(['commandes' => function ($query) {
+            $query->orderBy('created_at', 'desc');
+        }])
+        ->get();
+
+    return response()->json([
+        'utilisateurs' => $utilisateurs
+    ], 200);
+}
+
 
 
 }

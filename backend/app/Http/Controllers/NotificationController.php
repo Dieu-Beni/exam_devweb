@@ -9,11 +9,18 @@ class NotificationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($id_user)
     {
-        $notification = Notification::all();
-        return response()->json($notification, 200);
+        $notifications = Notification::where('id_user', $id_user)
+                            ->orderBy('created_at', 'desc')
+                            ->get();
+
+        return response()->json([
+            'message' => 'Notifications récupérées avec succès',
+            'notifications' => $notifications
+        ]);
     }
+
 
     /**
      * Store a newly created resource in storage.

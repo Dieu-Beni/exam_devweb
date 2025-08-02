@@ -18,9 +18,9 @@ class Commande extends Model
 
 
     public function user()
-{
-    return $this->belongsTo(User::class, 'id_user');
-}
+    {
+        return $this->belongsTo(User::class, 'id_user');
+    }
 
     public function paiement()
     {
@@ -46,5 +46,8 @@ class Commande extends Model
 {
     return $this->belongsTo(Panier::class, 'id_panier');
 }
+
+    
+
 
 }

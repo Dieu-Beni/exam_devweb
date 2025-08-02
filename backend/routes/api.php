@@ -10,6 +10,7 @@ use App\Http\Controllers\FactureController;
 use App\Http\Controllers\PaiementController;
 use App\Http\Controllers\ProduitController;
 use App\Http\Controllers\Panier_produitController;
+use App\Http\Controllers\StatController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ImageController;
 
@@ -48,13 +49,16 @@ Route::apiResource('panier_produits', Panier_produitController::class);//->middl
 Route::apiResource('articles', ArticleController::class);//->middleware('auth:sanctum');
 Route::apiResource('images', ImageController::class);//->middleware('auth:sanctum');
 
+Route::get('commandes-par-utilisateurs', [CommandeController::class, 'commandesParUtilisateurs']);
 
 
 Route::get('categories/{id}/produits', [CategorieController::class, 'produitsParCategorie']);
 
 Route::get('/commandes/utilisateur/{id}', [CommandeController::class, 'historiqueClient']);
 
-Route::get('/admin/statistiques', [AdminController::class, 'statistiques']);
+//Route::get('/admin/statistiques', [AdminController::class, 'statistiques']);
+
+Route::get('/statistiques', [StatController::class, 'chiffreAffaire']);
 
 
 Route::post('/produits/{id}', [ProduitController::class, 'update']);
