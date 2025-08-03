@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Category } from '../../services/category/category';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-categories',
@@ -11,7 +12,7 @@ import { Category } from '../../services/category/category';
 })
 export class Categories implements OnInit{
 
-  constructor(private categorySvc: Category){}
+  constructor(private categorySvc: Category, private router: Router){}
 
   showAdd: boolean = false;
   categoryOjt: any = {
@@ -33,32 +34,56 @@ export class Categories implements OnInit{
     this.clear();
   }
   getAllCategories(){
-    this.categorySvc.getAllCategories().subscribe((res:any)=>{
-      this.categoryList = res;
-      
+    this.categorySvc.getAllCategories().subscribe({
+      next: (res:any)=>{
+        this.categoryList = res;
+      },
+       error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
+        }
     });
   }
 
   onSave(){
-    this.categorySvc.saveCategory(this.categoryOjt).subscribe((res: any) => {
-      if(res && res.id){
+    this.categorySvc.saveCategory(this.categoryOjt).subscribe({
+      next: (res: any) => {
         alert("category Cree !");
         this.getAllCategories();
         this.clear();
-      }else{
-        alert(res.message);
-      }
+      },
+       error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
+        }
     });
   }
   onUpdate(){
-    this.categorySvc.updateCategory(this.categoryOjt).subscribe((res: any) =>{
-      if(res && res.id){
+    this.categorySvc.updateCategory(this.categoryOjt).subscribe({
+      next: (res: any) =>{
         alert("Categorie mise a jour !")
         this.getAllCategories();
         this.clear();
-      }else{
-        alert(res.message);
-      }
+      },
+       error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
+        }
     });
     this.getAllCategories();
 
@@ -72,12 +97,19 @@ export class Categories implements OnInit{
   onDelete(cate: any){
     const verif = confirm("Voulez vous vraiment supprime cette categorie ?");
     if(verif){
-      this.categorySvc.deleteCategory(cate.id).subscribe((res:any) => {
-        if(1){
+      this.categorySvc.deleteCategory(cate.id).subscribe({
+        next: (res:any) => {
           alert("Cette a bien ete supprime !");
           this.getAllCategories();
-        }else{
-          alert(res.massage)
+        },
+         error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
         }
       });
     }

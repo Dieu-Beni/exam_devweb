@@ -28,9 +28,9 @@ export class Profil implements OnInit{
       nom: ['', Validators.required],
       prenom: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
+      password: ['', [Validators.minLength(8)]],
       adresse: ['', Validators.required],
-      password_confirmation: ['', [Validators.required, Validators.minLength(8), ]]
+      password_confirmation: ['', [Validators.minLength(8), ]]
 
     });
     
@@ -38,15 +38,25 @@ export class Profil implements OnInit{
 
   ngOnInit(): void {
     if(Number(sessionStorage.getItem('user_id'))){
-      this.userSvc.getUser(Number(sessionStorage.getItem('user_id'))).subscribe((res: any) => {
-        this.user = res;
-        this.userForm.patchValue({
-          nom: this.user.nom,
-          prenom: this.user.prenom,
-          email: this.user.email,
-          adresse: this.user.adresse
+      this.userSvc.getUser(Number(sessionStorage.getItem('user_id'))).subscribe({
+        next: (res: any) => {
+          this.user = res;
+          this.userForm.patchValue({
+            nom: this.user.nom,
+            prenom: this.user.prenom,
+            email: this.user.email,
+            adresse: this.user.adresse
         });
-      })
+      },
+      error: (err) => {
+        if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
+      }
+    })
     }
   }
 
@@ -63,19 +73,21 @@ export class Profil implements OnInit{
         this.user.password_confirmation = this.userForm.value.password_confirmation;
         this.user.adresse = this.userForm.value.adresse;
 
-        this.userSvc.update(this.user).subscribe((res: any) => {
-          if(res && res.id){
+        this.userSvc.update(this.user).subscribe({
+          next: (res: any) => {
             alert("Vos informations ont ete mis a jour");
             sessionStorage.setItem("user_name", this.user.nom);
             sessionStorage.setItem("role", this.user.role);
             this.router.navigate(['/login'])
 
-          }else{
-            alert("Erreur de modification");
+          },
+          error: (err)=>{
+            console.log(err);
+            alert(err.error.message)
           }
         });
       }else{
-        alert("")
+        alert("Les mots de passes ne correspondes pas !")
       }
         
     }else{

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Cards } from '../../services/card/cards';
 import { CommonModule } from '@angular/common';
 
@@ -14,20 +14,42 @@ export class Card{
   cardProducts: any []  =[];
 
   constructor(private activeRoute: ActivatedRoute,
-    private cardSvc: Cards
+    private cardSvc: Cards,
+    private router: Router
   ){
-    activeRoute.params.subscribe((res: any) => {
-      this.cardId = res.id;
-      this.getCard(this.cardId)
+    activeRoute.params.subscribe({
+      next: (res: any) => {
+        this.cardId = res.id;
+        this.getCard(this.cardId)
+      },
+       error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
+        }
     })
   }
 
 
 
   getCard(id: number){
-    this.cardSvc.getCardProducts(id).subscribe((res: any) => {
-      this.cardProducts = res.produits;
-      console.log(res)
+    this.cardSvc.getCardProducts(id).subscribe({
+      next: (res: any) => {
+        this.cardProducts = res.produits;
+      },
+       error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
+        }
     })
   }
 }

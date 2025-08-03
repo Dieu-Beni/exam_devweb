@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Users } from '../../services/users/users';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-customer',
@@ -26,7 +27,7 @@ export class Customer implements OnInit{
   pageSize: number = 12;
   pages: number[] = [];
 
-  constructor(private userSvc: Users){}
+  constructor(private userSvc: Users, private router: Router){}
 
   ngOnInit(): void {
     this.getAllUsers();
@@ -52,9 +53,20 @@ export class Customer implements OnInit{
   }
 
   getAllUsers(){
-    this.userSvc.getAll().subscribe((res:any) => {
-      this.users = res;
-      this.updatePagination();
+    this.userSvc.getAll().subscribe({
+      next: (res:any) => {
+        this.users = res;
+        this.updatePagination();
+      },
+       error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
+        }
     })
   }
 
@@ -66,39 +78,62 @@ export class Customer implements OnInit{
     
     const conf = confirm("Voulez vous vraiment supprimer cet utilisateur ?");
     if(conf){
-      this.userSvc.delete(user.id).subscribe((res: any) => {
-      if(1){
-        alert('Utilisateur supprime');
-        this.getAllUsers();
-        this.clear();
-      }else{
-        alert('Erreur de supression')
-      }
+      this.userSvc.delete(user.id).subscribe({
+        next: (res: any) => {
+          alert('Utilisateur supprime');
+          this.getAllUsers();
+          this.clear();
+      },
+       error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
+        }
       });
     }
     
   }
 
   onUpdate(){
-    this.userSvc.update(this.user).subscribe((res: any) => {
-      if(res.id){
+    this.userSvc.update(this.user).subscribe({
+      next: (res: any) => {
         alert("Utilisateur modifie !");
         this.getAllUsers();
         this.clear();
-      }
+      },
+       error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
+        }
     })
 
   }
 
   onSave(){
-    this.userSvc.saveUser(this.user).subscribe((res: any) => {
-      if(res.id){
+    this.userSvc.saveUser(this.user).subscribe({
+      next: (res: any) => {
         alert("Utilisateur Cree avec succes !")
         this.getAllUsers();
         this.clear();
-      }else{
-        alert('Erreur de creation !')
-      }
+      },
+       error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
+        }
     })
   }
 

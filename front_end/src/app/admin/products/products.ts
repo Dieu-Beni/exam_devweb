@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, NgModel, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Product } from '../../services/products/product';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-products',
@@ -30,7 +31,7 @@ export class Products implements OnInit{
   pageSize: number = 12;
   pages: number[] = [];
 
-  constructor(private productSvc: Product, private fb: FormBuilder){
+  constructor(private productSvc: Product, private fb: FormBuilder, private router: Router){
     this.productForm = fb.group({
       nom: ['', [Validators.required]],
       description: ['', [Validators.required]],
@@ -54,15 +55,37 @@ export class Products implements OnInit{
     this.clear();
   }
   getAllCategories(){
-    this.productSvc.getAllCategories().subscribe((res:any)=>{
-      this.categoryList = res;
+    this.productSvc.getAllCategories().subscribe({
+      next: (res:any)=>{
+        this.categoryList = res;
+      },
+       error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
+        }
     });
   }
 
   getAllProducts(){
-    this.productSvc.getAllProducts().subscribe((res: any) => {
-      this.productList = res;
-      this.updatePagination();
+    this.productSvc.getAllProducts().subscribe({
+      next: (res: any) => {
+        this.productList = res;
+        this.updatePagination();
+      },
+       error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
+        }
     })
   }
 
@@ -78,15 +101,21 @@ export class Products implements OnInit{
     }
     formData.append('id_categorie', this.productForm.value.id_categorie);
 
-    this.productSvc.updateproduct(formData).subscribe((res: any) => {
-      //debugger;
-      if(res){
+    this.productSvc.updateproduct(formData).subscribe({
+      next: (res: any) => {
         alert("Produit modifie");
         this.getAllProducts();
         this.clear();
-      }else{
-        alert(res.message)
-      }
+      },
+       error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
+        }
     })
   }
 
@@ -108,17 +137,21 @@ export class Products implements OnInit{
 
         this.productSvc.saveProduct(formData).subscribe({
           next: res => {
+            alert("Produit cree");
+            this.getAllProducts();
+            this.productForm.reset();
+            this.productForm.get('image')?.setValue(null);
+            this.selectedFile = null;
           
-          alert("Produit cree");
-          this.getAllProducts();
-          this.productForm.reset();
-          this.productForm.get('image')?.setValue(null);
-          this.selectedFile = null;
-        
           },
-          error: err => {
-          console.error("Erreur API :", err);
-          alert("Erreur lors de l'envoi. "+ err.error.message);
+           error: (err) => {
+            if (err.status === 401) {
+              alert("Accès non autorisé. Veuillez vous connecter");
+              this.router.navigate(['/login']);
+            } else {
+              alert(err.error.message || "Une erreur s’est produite.");
+              console.error(err); // utile pour le debug
+            }
         }
       });
 
@@ -131,10 +164,20 @@ export class Products implements OnInit{
   onDelete(product: any){
     const verif = confirm("Voulez vous vraiment supprime ce produit ?");
     if(verif){
-      this.productSvc.deleteProduct(product.id).subscribe((res: any) => {
-        
+      this.productSvc.deleteProduct(product.id).subscribe({
+        next:(res: any) => {
           alert("Produit Supprime !");
           this.getAllProducts();
+        },
+         error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
+        }
         
     });
     }

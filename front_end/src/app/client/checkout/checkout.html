@@ -2,53 +2,71 @@
         <div class="container-fluid py-5" *ngIf="productList.length > 0">
             <div class="container py-5">
                 <h1 class="mb-4">Billing details</h1>
-                <form action="#">
+                <form [formGroup]="orderForm" (ngSubmit)="onOrder()">
                     <div class="row g-5">
                         <div class="col-md-12 col-lg-6 col-xl-7">
                           
                             <div class="form-item">
                                 <label class="form-label my-3">Adresse de livraison<sup>*</sup></label>
-                                <input type="text" [(ngModel)]="orderObj.adresse" name="adresse" class="form-control">
+                                <input type="text" formControlName="adresse"  name="adresse" class="form-control">
+                                <div *ngIf="orderForm.get('adresse')?.invalid && orderForm.get('adresse')?.touched" class="text-danger">
+                                    L'adresse est requise.
+                                </div>
                             </div>
                             <div class="form-item">
                                 <label class="form-label my-3">Mobile<sup>*</sup></label>
-                                <input type="tel" [(ngModel)]="orderObj.telephone" name="telephone" class="form-control">
+                                <input type="tel" formControlName="telephone"  name="telephone" class="form-control">
+                                <div *ngIf="orderForm.get('telephone')?.invalid && orderForm.get('telephone')?.touched" class="text-danger">
+                                    Le numero du telephone est requis.
+                                </div>
                             </div>
                             <hr>
                             <div class="form-item">
                                 <div class="col-12">
                                     <div class="text-start my-3">
                                         <label for="">Paiement*</label>
-                                        <select [(ngModel)]="orderObj.mode_paiement" name="mode_paiement" class="form-select">
+                                        <select formControlName="mode_paiement" name="mode_paiement" class="form-select">
                                             <option ></option>
                                             <option value="en ligne">En Ligne</option>
                                             <option value="apres livraison">En espece apres livraison</option>
                                         </select>
+                                        <div *ngIf="orderForm.get('mode_paiement')?.invalid && orderForm.get('mode_paiement')?.touched" class="text-danger">
+                                            Le mode de paiement est requis.
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row" *ngIf="orderObj.mode_paiement === 'en ligne'">
+                            <div class="row" *ngIf="orderForm.get('mode_paiement')?.value === 'en ligne'">
                                 <div class="col-md-12 col-lg-4">
                                     <div class="form-item w-100">
                                         <label class="form-label my-3">Numero carte<sup>*</sup></label>
-                                        <input type="number" class="form-control" [(ngModel)]="orderObj.numero" name="numero">
+                                        <input type="number" class="form-control" formControlName="numero" name="numero">
+                                        <div *ngIf="orderForm.get('numero')?.invalid && orderForm.get('numero')?.touched" class="text-danger">
+                                            Le numero de carte est requis.compris entre 13 et 19 chiffres
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-12 col-lg-4">
                                     <div class="form-item w-100">
                                         <label class="form-label my-3">Date Expiration<sup>*</sup></label>
-                                        <input type="month" class="form-control" [(ngModel)]="orderObj.date_expiration" name="date_expiration">
+                                        <input type="month" class="form-control" formControlName="date_expiration" name="date_expiration">
+                                        <div *ngIf="orderForm.get('date_expiration')?.invalid && orderForm.get('date_expiration')?.touched" class="text-danger">
+                                            La date d'expiration est requise.
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-12 col-lg-4">
                                     <div class="form-item w-100">
                                         <label class="form-label my-3">CVC<sup>*</sup></label>
-                                        <input type="text" maxlength="3" pattern="\\d{3}" class="form-control" [(ngModel)]="orderObj.cvc" name="cvc">
+                                        <input type="text" maxlength="3" pattern="\\d{3}" class="form-control" formControlName="cvc" name="cvc">
+                                        <div *ngIf="orderForm.get('cvc')?.invalid && orderForm.get('cvc')?.touched" class="text-danger">
+                                            Le cvc est requis. (3 chiffres)!
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="row g-4 text-center align-items-center justify-content-center pt-4">
-                                <button type="button" class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary" (click)="onOrder()">Commander</button>
+                                <button type="submit" class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary" >Commander</button>
                             </div>
                         </div>
                         <div class="col-md-12 col-lg-6 col-xl-5">

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PaymentService } from '../../services/payment/payment-service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -29,7 +29,7 @@ export class Paiement {
     num: 0,
     date: ''
   }
-  constructor(private activatedRoute: ActivatedRoute, private paiementScv: PaymentService){
+  constructor(private activatedRoute: ActivatedRoute, private paiementScv: PaymentService, private router: Router){
     activatedRoute.params.subscribe((res: any) => {
       this.id = res.id;
       this.getPaiement(this.id);
@@ -42,8 +42,16 @@ export class Paiement {
         this.paiement = res.paiement;
         this.carte = res.carte;
         this.facture = res.facture;
-        //console.log(this.paiement)
-      }
+      },
+       error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
+        }
     })
   }
    showPanel(){
@@ -62,10 +70,15 @@ export class Paiement {
       next: (res: any)=> {
         alert('Modification effectué !');
       },
-      error: (err)=>{
-        alert(err.error.message);
-        console.log(err);
-      }
+       error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
+        }
     })
   }
 }

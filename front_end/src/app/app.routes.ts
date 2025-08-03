@@ -107,5 +107,9 @@ export const routes: Routes = [
                 component: Paiement
             }
         ]
+    },
+    {
+        path: '**',
+        component: Login
     }
 ];

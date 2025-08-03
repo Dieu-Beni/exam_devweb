@@ -3,6 +3,7 @@ import { OrderService } from '../../services/order/order-service';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData } from 'chart.js';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashbord',
@@ -32,41 +33,52 @@ export class Dashbord implements OnInit{
   };
   productChartOptions: ChartConfiguration<'pie'>['options'] = { responsive: true };
 
-  constructor(private statsService: OrderService) {}
+  constructor(private statsService: OrderService, private router: Router) {}
 
   ngOnInit(): void {
-    this.statsService.getStats().subscribe((res: any) => {
-      // Chiffre d'affaire par mois
-      const moisNoms = [
-              'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
-              'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
-            ];       // Chiffre d'affaires par mois
-       this.monthlyChartData = {
-          labels: res.par_mois.map((item: any) => moisNoms[item.mois - 1]),
+    this.statsService.getStats().subscribe({
+      next: (res: any) => {
+        // Chiffre d'affaire par mois
+        const moisNoms = [
+                'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+                'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+              ];       // Chiffre d'affaires par mois
+        this.monthlyChartData = {
+            labels: res.par_mois.map((item: any) => moisNoms[item.mois - 1]),
+            datasets: [{
+              label: 'Chiffre d\'Affraire mensuel (FCFA)',
+              data: res.par_mois.map((item: any) => parseFloat(item.total)),
+            }]
+          };
+
+        // Chiffre d'affaires par année
+        this.yearlyChartData = {
+          labels: res.par_annee.map((item: any) => item.annee.toString()),
           datasets: [{
-            label: 'Chiffre d\'Affraire mensuel (FCFA)',
-            data: res.par_mois.map((item: any) => parseFloat(item.total)),
+            label: 'Chiffre d\'affaire Annuel (FCFA)',
+            data: res.par_annee.map((item: any) => parseFloat(item.total)),
+          }]
+        }
+
+        this.productChartData = {
+          labels: res.produits.map((item: any) => item.nom),
+          datasets: [{
+            label: 'Produits les plus vendus',
+            data: res.produits.map((item: any) => parseInt(item.total_vendus)),
+            backgroundColor: this.generateColors(res.produits.length),
+            borderWidth: 1
           }]
         };
-
-      // Chiffre d'affaires par année
-      this.yearlyChartData = {
-        labels: res.par_annee.map((item: any) => item.annee.toString()),
-        datasets: [{
-          label: 'Chiffre d\'affaire Annuel (FCFA)',
-          data: res.par_annee.map((item: any) => parseFloat(item.total)),
-        }]
-      }
-
-      this.productChartData = {
-        labels: res.produits.map((item: any) => item.nom),
-        datasets: [{
-          label: 'Produits les plus vendus',
-          data: res.produits.map((item: any) => parseInt(item.total_vendus)),
-          backgroundColor: this.generateColors(res.produits.length),
-          borderWidth: 1
-        }]
-      };
+      },
+       error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
+        }
     });
   }
 

@@ -38,6 +38,7 @@ export class Register {
 
   onRegister(){
     if(this.userForm.valid){
+      
       this.user.nom = this.userForm.value.nom;
       this.user.prenom = this.userForm.value.prenom;
       this.user.email = this.userForm.value.email;
@@ -53,7 +54,12 @@ export class Register {
           this.router.navigate(['/login'])
         },
         error: (err) => {
-          alert(err.error.message);
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vérifier vos identifiants.");
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
         }
       });
     }else{

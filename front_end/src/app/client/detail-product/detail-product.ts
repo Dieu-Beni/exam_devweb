@@ -30,8 +30,19 @@ export class DetailProduct implements OnInit{
     private card: Cards,
     private shared: Shared
   ){
-    activedRoute.params.subscribe((res: any) => {
-      this.getPro(res.id);
+    activedRoute.params.subscribe({
+      next: (res: any) => {
+        this.getPro(res.id);
+      },
+       error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
+        }
     })
   }
 
@@ -42,9 +53,20 @@ export class DetailProduct implements OnInit{
   }
 
   getPro(id: number){
-    this.productSvc.getProduct(id).subscribe((result: any) => {
+    this.productSvc.getProduct(id).subscribe({
+      next: (result: any) => {
         this.product = result;
-      })
+      },
+      error: (err) => {
+        if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
+      }
+    })
   }
 
 
@@ -55,16 +77,26 @@ export class DetailProduct implements OnInit{
           this.numberItem++;
           this.sendToParent(this.numberItem);
           this.proCardList.push(pro);
-          //console.log(this.categoryList)
           const panierPro:any = {
             'id_panier': sessionStorage.getItem('id_panier'),
             'id_produit': pro.id,
             'quantite': 1
           }
 
-          this.card.saveProductCard(panierPro).subscribe((res: any) => {
+          this.card.saveProductCard(panierPro).subscribe({
+            next: (res: any) => {
             if(res.message){
               alert('Ajout effectue !');
+            }
+            },
+            error: (err) => {
+              if (err.status === 401) {
+                  alert("Accès non autorisé. Veuillez vous connecter");
+                  this.router.navigate(['/login']);
+                } else {
+                  alert(err.error.message || "Une erreur s’est produite.");
+                  console.error(err); // utile pour le debug
+                }
             }
           })
 
@@ -80,13 +112,21 @@ export class DetailProduct implements OnInit{
     }
 
     getAllProductsCard(id: number){
-      this.card.getCardProducts(id).subscribe((res: any) => {
-        //console.log("la liste: ",res)
-        this.proCardList = res.produits;
-        //console.log(this.proCardList)
-        this.numberItem = this.proCardList.length;
-        //console.log("num: ", this.numberItem)
-        this.sendToParent(this.numberItem)
+      this.card.getCardProducts(id).subscribe({
+        next: (res: any) => {
+          this.proCardList = res.produits;
+          this.numberItem = this.proCardList.length;
+          this.sendToParent(this.numberItem);
+        },
+        error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
+        }
       })
     }
 

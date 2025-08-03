@@ -2,13 +2,13 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Cards } from '../../services/card/cards';
 import { Shared } from '../../services/shared/shared';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { OrderService } from '../../services/order/order-service';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-checkout',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './checkout.html',
   styleUrl: './checkout.css'
 })
@@ -32,18 +32,53 @@ export class Checkout implements OnInit{
     date_expiration: '',
     cvc: 0,
   }
+  orderForm: FormGroup;
 
-  constructor(private cardService: Cards, private shared: Shared, private orderSvc: OrderService, private router: Router){}
+  constructor(private cardService: Cards, 
+    private shared: Shared, 
+    private orderSvc: OrderService, 
+    private router: Router,
+    private fb: FormBuilder,
+  ){
+    this.orderForm = fb.group({
+      adresse: ['', Validators.required],
+      telephone: ['', Validators.required],
+      mode_paiement: ['', Validators.required],
+      numero: [''],
+      date_expiration: [''],
+      cvc: [''],
+    });
+  }
 
   ngOnInit(): void {
+    this.orderForm.get('mode_paiement')?.valueChanges.subscribe(mode => {
+      const numero = this.orderForm.get('numero');
+      const date_expiration = this.orderForm.get('date_expiration');
+      const cvc = this.orderForm.get('cvc');
+
+      if (mode === 'en ligne') {
+        numero?.setValidators([Validators.required, Validators.minLength(13), Validators.maxLength(19)]);
+        date_expiration?.setValidators([Validators.required, Validators.pattern(/^\d{4}-\d{2}$/)]);
+        cvc?.setValidators([Validators.required, Validators.pattern(/^\d{3}$/)]);
+      } else {
+        numero?.clearValidators();
+        date_expiration?.clearValidators();
+        cvc?.clearValidators();
+      }
+
+      //mettre à jour la validité
+      numero?.updateValueAndValidity();
+      date_expiration?.updateValueAndValidity();
+      cvc?.updateValueAndValidity();
+    });
+
     this.getAllPro();
-    console.log(this.orderObj);
   }
 
   getAllPro(){
     const id = Number(sessionStorage.getItem('id_panier'))
-    this.cardService.getCardProducts(id).subscribe((res: any) => {
-      if(res){
+    this.cardService.getCardProducts(id).subscribe({
+      next: (res: any) => {
         this.productList = res.produits
         this.shared.setVariable(this.productList.length);
         this.productList.forEach(p => {
@@ -51,30 +86,54 @@ export class Checkout implements OnInit{
           this.quantite += Number(p.pivot.quantite);
         });
         this.total = this.subTotal + 1000;
+      },
+      error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
       }
     })
   }
 
   onOrder(){
     if(this.productList.length > 0){
-      console.log(this.orderObj);
-      debugger;
-      if(this.orderObj.adresse !== '' && this.orderObj.telephone !== '' && this.orderObj.mode_paiement !== ''){
-      this.orderObj.quantite =this.quantite;
-      this.orderObj.total = this.total;
-      this.orderSvc.saveOrder(this.orderObj).subscribe((res: any) => {
-        if(res){
-          console.log(res);
+
+      if(this.orderForm.valid){
+
+        this.orderObj.adresse = this.orderForm.get('adresse')?.value;
+        this.orderObj.telephone = this.orderForm.get('telephone')?.value;
+        this.orderObj.mode_paiement = this.orderForm.get('mode_paiement')?.value;
+        this.orderObj.numero = this.orderForm.get('numero')?.value;
+        this.orderObj.cvc = this.orderForm.get('cvc')?.value;
+        this.orderObj.date_expiration = this.orderForm.get('date_expiration')?.value;
+
+        this.orderObj.quantite =this.quantite;
+        this.orderObj.total = this.total;
+        
+        this.orderSvc.saveOrder(this.orderObj).subscribe({
+        next: (res: any) => {
           alert('Commande passee !');
           sessionStorage.setItem('id_panier', res.panier.id);
           this.shared.setVariable(0);
           this.router.navigate(['/shop']);
+        },
+        error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
         }
       })
       }else{
-        alert("Tous les champs sont obligatoire !")
+        this.orderForm.markAllAsTouched();
       }
-      console.log(this.orderObj);
     }else{
       alert('Veillez ajouter un produit !')
     }

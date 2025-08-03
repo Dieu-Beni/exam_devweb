@@ -54,10 +54,15 @@ export class Order implements OnInit{
         this.orders = res;
         this.updatePagination();
       },
-      error: (err) => {
-        console.error(err.error);
-        alert(err.error.message);
-      }
+       error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
+        }
     })
   }
 
@@ -73,10 +78,15 @@ export class Order implements OnInit{
       next: (res: any) => {
         alert('Statut modifie !');
       },
-      error: (err) => {
-        console.error(err.error);
-        alert(err.error.message);
-      }
+       error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
+        }
     })
   }
 
@@ -85,10 +95,15 @@ export class Order implements OnInit{
       next: (res: any) => {
        us= res;
       },
-      error: (err) =>{
-        console.error(err.error);
-        alert(err.error.message);
-      }
+       error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
+        }
     });
   }
 

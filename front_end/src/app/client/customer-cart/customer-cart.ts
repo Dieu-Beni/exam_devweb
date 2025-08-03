@@ -29,17 +29,27 @@ export class CustomerCart implements OnInit {
     if(sessionStorage.getItem('id_panier')){
       const id = Number(sessionStorage.getItem('id_panier'));
     
-      this.card.getCardProducts(id).subscribe((res: any) => {
-        if(res.message){
-          this.proList = res.produits;
-          this.shared.setVariable(this.proList.length);
-          //console.log("en haut",this.proList)
-          this.proList.forEach(p => {
-            this.subTotal += Number(p.pivot.montant);
-            this.quantite += Number(p.pivot.quantite);
-          });
-          this.total = this.subTotal + 1000;
-        }
+      this.card.getCardProducts(id).subscribe({
+        next: (res: any) => {
+          if(res.message){
+            this.proList = res.produits;
+            this.shared.setVariable(this.proList.length);
+            this.proList.forEach(p => {
+              this.subTotal += Number(p.pivot.montant);
+              this.quantite += Number(p.pivot.quantite);
+            });
+            this.total = this.subTotal + 1000;
+          }
+        },
+        error: (err) => {
+        if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
+      }
       });
     }else{
       alert("Vous n'etes pas connecte !");
@@ -57,9 +67,18 @@ export class CustomerCart implements OnInit {
             'quantite': pro.pivot.quantite + 1,
             'montant': Number(pro.pivot.montant) + Number(pro.prix)
           }
-      this.card.updateProductCard(panierPro).subscribe((res: any) => {
-        if(res){
+      this.card.updateProductCard(panierPro).subscribe({
+        next: (res: any) => {
           this.getAllpro();
+        },
+        error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
         }
       })
     }else{
@@ -76,10 +95,19 @@ export class CustomerCart implements OnInit {
             'quantite': pro.pivot.quantite - 1,
             'montant': Number(pro.pivot.montant) - Number(pro.prix)
           }
-      this.card.updateProductCard(panierPro).subscribe((res: any) => {
-        if(res){
+      this.card.updateProductCard(panierPro).subscribe({
+        next: (res: any) => {
           this.getAllpro();
-        }
+        },
+        error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
+      }
       })
     }
   }
@@ -87,10 +115,20 @@ export class CustomerCart implements OnInit {
   remove(pro: any){
     const conf = confirm("Vouslez vous retirer ce produit du panier ?");
     if(conf){
-      this.card.deleteproductCard(pro.pivot.id).subscribe((res: any) => {
+      this.card.deleteproductCard(pro.pivot.id).subscribe({
+        next: (res: any) => {
           this.getAllpro();
-          console.log(this.proList)
-        this.shared.setVariable(this.proList.length -1);
+          this.shared.setVariable(this.proList.length -1);
+        },
+        error: (err) => {
+          if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vous connecter");
+            this.router.navigate(['/login']);
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
+      }
       })
     }
   }

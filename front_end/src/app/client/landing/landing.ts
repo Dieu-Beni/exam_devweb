@@ -31,11 +31,19 @@ export class Landing implements OnInit{
   }
 
   getAllCategories(){
-    this.prodSvc.getAllCategories().subscribe((res: any) => {
-      if(res){
+    this.prodSvc.getAllCategories().subscribe({
+      next: (res: any) => {
         this.categoryList = res;
+      },
+      error: (err) =>{
+        if (err.status === 401) {
+            alert("Accès non autorisé. Veuillez vérifier vos identifiants.");
+          } else {
+            alert(err.error.message || "Une erreur s’est produite.");
+            console.error(err); // utile pour le debug
+          }
       }
-    })
+    });
   }
 
 
