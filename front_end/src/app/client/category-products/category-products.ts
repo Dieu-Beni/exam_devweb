@@ -16,6 +16,7 @@ export class CategoryProducts implements OnInit {
 
   activeCategoryId: number = 0;
   products: any[] = [];
+  isLoading: boolean = false;
 
    
     currentPage: number = 1;
@@ -53,10 +54,12 @@ export class CategoryProducts implements OnInit {
   }
 
   loadProducts(){
+    this.isLoading = true;
     this.productSvc.getAllProductsByCategory(this.activeCategoryId).subscribe({
       next: (res: any) => {
         this.products = res;
         this.updatePagination();
+        this.isLoading = false;
     },
      error: (err) => {
           if (err.status === 401) {
@@ -66,15 +69,19 @@ export class CategoryProducts implements OnInit {
             alert(err.error.message || "Une erreur s’est produite.");
             console.error(err); // utile pour le debug
           }
+          this.isLoading = false;
         }
       
     })
   }
 
   getCategorie(id: number){
+    this.isLoading = true;
+
     this.categorieSvc.getById(id).subscribe({
       next: (res: any) => {
       this.categorie = res.nom;
+      this.isLoading = false;
     }
       , error: (err) => {
           if (err.status === 401) {
@@ -84,6 +91,7 @@ export class CategoryProducts implements OnInit {
             alert(err.error.message || "Une erreur s’est produite.");
             console.error(err); // utile pour le debug
           }
+          this.isLoading = false;
         }
     })
   }
@@ -112,6 +120,7 @@ export class CategoryProducts implements OnInit {
     }
 
     addToCard(pro: any){
+
       if(sessionStorage.getItem('access_token') && sessionStorage.getItem('id_panier') !== ''){
 
         if(!this.proCardList.find(p => p.id === pro.id)){
@@ -123,10 +132,11 @@ export class CategoryProducts implements OnInit {
             'id_produit': pro.id,
             'quantite': 1
           }
-
+          this.isLoading = true;
           this.card.saveProductCard(panierPro).subscribe({
             next: (res: any) => {
               alert('Ajout effectue !');
+              this.isLoading = false
             },
             error: (err) => {
               if (err.status === 401) {
@@ -136,6 +146,7 @@ export class CategoryProducts implements OnInit {
                 alert(err.error.message || "Une erreur s’est produite.");
                 console.error(err); // utile pour le debug
               }
+              this.isLoading = false;
             }
           })
 
@@ -151,11 +162,13 @@ export class CategoryProducts implements OnInit {
     }
 
     getAllProductsCard(id: number){
+      this.isLoading = true;
       this.card.getCardProducts(id).subscribe({
         next: (res: any) => {
         this.proCardList = res.produits;
         this.numberItem = this.proCardList.length;
         this.sendToParent(this.numberItem);
+        this.isLoading = false;
         },
          error: (err) => {
           if (err.status === 401) {
@@ -165,6 +178,7 @@ export class CategoryProducts implements OnInit {
             alert(err.error.message || "Une erreur s’est produite.");
             console.error(err); // utile pour le debug
           }
+          this.isLoading = false;
         }
       })
     }

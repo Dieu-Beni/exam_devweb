@@ -1,3 +1,9 @@
+ <!-- Spinner Start -->
+        <div id="spinner" *ngIf="isLoading && isFirst" class="show w-100 vh-60 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
+            <div class="spinner-grow text-primary" style="background-color: #81c408;" role="status"></div>
+            <div class="text-secondary mt-2">Chargement...</div>
+        </div>
+    <!-- Spinner End -->
         <!-- Cart Page Start -->
         <div class="container-fluid py-5 mt-5">
             <div class="container py-5">
@@ -24,7 +30,7 @@
                                     <p class="mb-0 mt-4">{{pro.nom}} </p>
                                 </td>
                                 <td>
-                                    <p class="mb-0 mt-4">{{pro.prix}} FCFA</p>
+                                    <p class="mb-0 mt-4">{{pro.prix | number:'1.2-2'}} FCFA</p>
                                 </td>
                                 <td>
                                     <div class="input-group quantity mt-4" style="width: 100px;">
@@ -42,7 +48,7 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <p class="mb-0 mt-4">{{pro.pivot.montant}} FCFA</p>
+                                    <p class="mb-0 mt-4">{{pro.pivot.montant | number:'1.2-2'}} FCFA</p>
                                 </td>
                                 <td>
                                     <button class="btn btn-md rounded-circle bg-light border mt-4" (click)="remove(pro)">
@@ -65,7 +71,7 @@
                                 </div>
                                  <div class="d-flex justify-content-between mb-4">
                                     <h5 class="mb-0 me-4">Sous Total:</h5>
-                                    <p class="mb-0">{{subTotal}} FCFA</p>
+                                    <p class="mb-0">{{subTotal | number:'1.2-2'}} FCFA</p>
                                 </div>
                                 <div class="d-flex justify-content-between">
                                     <h5 class="mb-0 me-4">Frais de Livraison</h5>
@@ -77,7 +83,7 @@
                             </div>
                             <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
                                 <h5 class="mb-0 ps-4 me-4">Total</h5>
-                                <p class="mb-0 pe-4">{{total}}</p>
+                                <p class="mb-0 pe-4">{{total | number:'1.2-2'}}</p>
                             </div>
                             <button class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4" type="button" (click)="navToRoute('/checkout')">Proceder a la commamde</button>
                         </div>

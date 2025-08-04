@@ -26,6 +26,13 @@ export class Dashbord implements OnInit{
   };
   yearlyChartOptions: ChartConfiguration<'bar'>['options'] = { responsive: true };
 
+    // 2. Chiffre d'affaire par année
+  monthlyOrderChartData: ChartConfiguration<'bar'>['data'] = {
+    labels: [],
+    datasets: [{ data: [], label: 'Commendes par mois' }]
+  };
+  monthlyOrderChartOptions: ChartConfiguration<'bar'>['options'] = { responsive: true };
+
   // 3. Produits les plus vendus
   productChartData: ChartConfiguration<'pie'>['data'] = {
     labels: [],
@@ -60,10 +67,19 @@ export class Dashbord implements OnInit{
           }]
         }
 
+        this.monthlyOrderChartData = {
+            labels: res.commandes_par_mois.map((item: any) => moisNoms[item.mois - 1]),
+            datasets: [{
+              label: 'Commandes mensuelles',
+              data: res.commandes_par_mois.map((item: any) => parseFloat(item.total_commandes)),
+            }]
+          };
+
+
         this.productChartData = {
           labels: res.produits.map((item: any) => item.nom),
           datasets: [{
-            label: 'Produits les plus vendus',
+            label: 'Produits vendus',
             data: res.produits.map((item: any) => parseInt(item.total_vendus)),
             backgroundColor: this.generateColors(res.produits.length),
             borderWidth: 1

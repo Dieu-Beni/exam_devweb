@@ -18,6 +18,7 @@ export class Checkout implements OnInit{
   subTotal: number = 0;
   total: number = 0;
   quantite: number = 0;
+  isLoading: boolean = false;
 
   orderObj: any = {
     id_user: Number(sessionStorage.getItem('user_id')),
@@ -42,7 +43,7 @@ export class Checkout implements OnInit{
   ){
     this.orderForm = fb.group({
       adresse: ['', Validators.required],
-      telephone: ['', Validators.required],
+      telephone: ['', [Validators.required, Validators.pattern(/^7[0-9]{8}$/)]],
       mode_paiement: ['', Validators.required],
       numero: [''],
       date_expiration: [''],
@@ -76,6 +77,7 @@ export class Checkout implements OnInit{
   }
 
   getAllPro(){
+    this.isLoading = true;
     const id = Number(sessionStorage.getItem('id_panier'))
     this.cardService.getCardProducts(id).subscribe({
       next: (res: any) => {
@@ -88,24 +90,26 @@ export class Checkout implements OnInit{
         this.total = this.subTotal + 1000;
       },
       error: (err) => {
-          if (err.status === 401) {
+        if (err.status === 401) {
             alert("Accès non autorisé. Veuillez vous connecter");
             this.router.navigate(['/login']);
           } else {
             alert(err.error.message || "Une erreur s’est produite.");
             console.error(err); // utile pour le debug
           }
-      }
-    })
+        }
+      });
+      this.isLoading = false;
   }
 
   onOrder(){
+    
     if(this.productList.length > 0){
 
       if(this.orderForm.valid){
 
         this.orderObj.adresse = this.orderForm.get('adresse')?.value;
-        this.orderObj.telephone = this.orderForm.get('telephone')?.value;
+        this.orderObj.telephone = String(this.orderForm.get('telephone')?.value);
         this.orderObj.mode_paiement = this.orderForm.get('mode_paiement')?.value;
         this.orderObj.numero = this.orderForm.get('numero')?.value;
         this.orderObj.cvc = this.orderForm.get('cvc')?.value;
@@ -113,13 +117,14 @@ export class Checkout implements OnInit{
 
         this.orderObj.quantite =this.quantite;
         this.orderObj.total = this.total;
-        
+        this.isLoading = true;
         this.orderSvc.saveOrder(this.orderObj).subscribe({
         next: (res: any) => {
           alert('Commande passee !');
           sessionStorage.setItem('id_panier', res.panier.id);
           this.shared.setVariable(0);
           this.router.navigate(['/shop']);
+          this.isLoading = false;
         },
         error: (err) => {
           if (err.status === 401) {
@@ -129,6 +134,8 @@ export class Checkout implements OnInit{
             alert(err.error.message || "Une erreur s’est produite.");
             console.error(err); // utile pour le debug
           }
+          this.isLoading = false;
+          this.router.navigate(['/shop']);
         }
       })
       }else{
@@ -137,6 +144,5 @@ export class Checkout implements OnInit{
     }else{
       alert('Veillez ajouter un produit !')
     }
-    
   }
 }

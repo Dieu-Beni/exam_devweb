@@ -30,7 +30,8 @@ export class Profil implements OnInit{
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.minLength(8)]],
       adresse: ['', Validators.required],
-      password_confirmation: ['', [Validators.minLength(8), ]]
+      password_confirmation: ['', [Validators.minLength(8), ]],
+      check: ['', Validators.required]
 
     });
     
@@ -58,20 +59,45 @@ export class Profil implements OnInit{
       }
     })
     }
+
+    this.userForm.get('check')?.valueChanges.subscribe(pass=>{
+      const password = this.userForm.get('password');
+      const password_confirmation = this.userForm.get('password_confirmation');
+      if(pass){
+        password?.setValidators([Validators.required, Validators.minLength(8)]);
+        password_confirmation?.setValidators([Validators.required, Validators.minLength(8)])
+      }else{
+        password?.clearValidators();
+        password_confirmation?.clearValidators()
+      }
+      password?.updateValueAndValidity();
+      password_confirmation?.updateValueAndValidity();
+    });
   }
 
  
 
   onUpdate(){
+    console.log(this.userForm.value.check)
     
     if(this.userForm.valid){
-      if(this.userForm.value.password === this.userForm.value.password_confirmation){
         this.user.nom = this.userForm.value.nom;
         this.user.prenom = this.userForm.value.prenom;
         this.user.email = this.userForm.value.email;
-        this.user.password = this.userForm.value.password;
-        this.user.password_confirmation = this.userForm.value.password_confirmation;
         this.user.adresse = this.userForm.value.adresse;
+
+        if(this.userForm.get('check')?.value === true){
+
+          if(this.userForm.value.password === this.userForm.value.password_confirmation){
+            this.user.password = this.userForm.value.password;
+            this.user.password_confirmation = this.userForm.value.password_confirmation;
+          }else{
+            alert('Les mots de passe ne correspondent pas !');
+            return;
+          }
+
+        }
+
 
         this.userSvc.update(this.user).subscribe({
           next: (res: any) => {
@@ -86,9 +112,6 @@ export class Profil implements OnInit{
             alert(err.error.message)
           }
         });
-      }else{
-        alert("Les mots de passes ne correspondes pas !")
-      }
         
     }else{
       this.userForm.markAllAsTouched();

@@ -19,6 +19,7 @@ import { Dashbord } from './admin/dashbord/dashbord';
 import { adminGuard } from './guards/admin-guard';
 import { clientGuard } from './guards/client-guard';
 import { Paiement } from './admin/paiement/paiement';
+import { ClientHistorique } from './admin/client-historique/client-historique';
 
 export const routes: Routes = [
     {
@@ -105,6 +106,10 @@ export const routes: Routes = [
             {
                 path: 'payment/:id',
                 component: Paiement
+            },
+            {
+                path:'commande/:id_user',
+                component: ClientHistorique
             }
         ]
     },

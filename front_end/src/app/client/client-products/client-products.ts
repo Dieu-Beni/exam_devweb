@@ -4,10 +4,11 @@ import { Product } from '../../services/products/product';
 import { Router } from '@angular/router';
 import { Shared } from '../../services/shared/shared';
 import { Cards } from '../../services/card/cards';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-client-products',
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './client-products.html',
   styleUrl: './client-products.css'
 })
@@ -31,6 +32,9 @@ export class ClientProducts implements OnInit{
     pages: number[] = [];
     numberItem: number = 0;
     proCardList: any[] =[];
+    isLoading: boolean = false;
+    filteredProducts: any[] = [];
+    searchTerm: string = '';
   
     constructor(private prodSvc: Product, private router: Router, private shared: Shared, private card: Cards){}
   
@@ -44,11 +48,13 @@ export class ClientProducts implements OnInit{
     }
   
     getAllProducts(){
+      this.isLoading = true;
       this.prodSvc.getProducts().subscribe({
         next: (res: any) => {
           this.prodlist = res;
           this.items = res;
           this.updatePagination();
+          this.isLoading = false;
         },
         error: (err) => {
           if (err.status === 401) {
@@ -165,5 +171,18 @@ export class ClientProducts implements OnInit{
         }
       })
     }
+
+
+    onSearch() {
+      const term = this.searchTerm.toLowerCase();
+      this.filteredProducts = this.prodlist.filter(p =>
+        p.nom.toLowerCase().includes(term) || 
+        p.description.toLowerCase().includes(term)
+      );
+      console.log(this.filteredProducts);
+      this.items = this.filteredProducts;
+      this.updatePagination();
+    }
+
 
 }

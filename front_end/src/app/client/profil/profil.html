@@ -58,23 +58,30 @@
                             L'address est requis.
                             </div>
                         </div>
+                        
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col">
+                            <input type="checkbox" name="check" class="form-check-input" formControlName="check">
+                            <label class="form-check-label">Modifier votre mot de passe</label>
+                        </div>
                     </div>
                     
                 </div>
-                <div class="mb-3">
+                <div class="mb-3" *ngIf="userForm.get('check')?.value">
                     <div class="row">
                         <div class="col">
                             <label for="" class="form-label">Nouveau mot de passe</label>
                             <input type="password" class="form-control" formControlName="password_confirmation">
                             <div *ngIf="userForm.get('password_confirmation')?.invalid && userForm.get('password_confirmation')?.touched" class="text-danger">
-                            Le mot de passe est requis.
+                            Le mot de passe est requis.(min 8 caracteres)
                             </div>
                         </div>
                         <div class="col">
                             <label for="" class="form-label">Confirmation mot de passe</label>
                             <input type="password" class="form-control" formControlName="password" >
                             <div *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched" class="text-danger">
-                            Le mot de passe est requis.
+                            Le mot de passe est requis.(min 8 caracteres)
                             </div>
                         </div>
                     </div>

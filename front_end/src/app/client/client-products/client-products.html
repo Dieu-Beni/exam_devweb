@@ -29,6 +29,34 @@
 
 </head>
 <body>
+    <!-- Spinner Start -->
+        <div id="spinner" *ngIf="isLoading" class="show w-100 vh-60 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
+            <div class="spinner-grow text-primary" style="background-color: #81c408;" role="status"></div><br>
+            <div class="text-secondary mt-2">Chargement...</div>
+        </div>
+    <!-- Spinner End -->
+     <!-- Modal Search Start -->
+        <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog ">
+                <div class="modal-content rounded-0">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Recherche par mot clé</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body d-flex align-items-center">
+                        <div class="input-group w-75 mx-auto d-flex">
+                        <input type="search" class="form-control p-3"
+                            placeholder="mot clé"
+                            [(ngModel)]="searchTerm"
+                            (input)="onSearch()"
+                            aria-describedby="search-icon-1">
+                           <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal Search End -->
     <!-- Fruits Shop Start-->
     <div class="container-fluid fruite py-5 mt-5">
         <div class="container py-5 col-12">

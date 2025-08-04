@@ -16,6 +16,8 @@ export class CustomerCart implements OnInit {
   subTotal: number = 0;
   total: number = 0;
   quantite: number = 0;
+  isLoading: boolean = false;
+  isFirst: boolean = true;
 
   constructor(private card: Cards, private shared: Shared, private router: Router){}
 
@@ -26,6 +28,9 @@ export class CustomerCart implements OnInit {
   }
 
   getAllpro(){
+    this.isLoading = true;
+    this.subTotal = 0;
+    this.quantite = 0;
     if(sessionStorage.getItem('id_panier')){
       const id = Number(sessionStorage.getItem('id_panier'));
     
@@ -40,6 +45,8 @@ export class CustomerCart implements OnInit {
             });
             this.total = this.subTotal + 1000;
           }
+          this.isLoading = false;
+          this.isFirst = false;
         },
         error: (err) => {
         if (err.status === 401) {
@@ -49,12 +56,15 @@ export class CustomerCart implements OnInit {
             alert(err.error.message || "Une erreur s’est produite.");
             console.error(err); // utile pour le debug
           }
+          this.isLoading = false;
+          this.isFirst = false;
       }
       });
     }else{
       alert("Vous n'etes pas connecte !");
       this.router.navigateByUrl('/login');
     }
+    
     
   }
 

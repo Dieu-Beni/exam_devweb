@@ -18,6 +18,12 @@
         <!-- Customized Bootstrap Stylesheet -->
         
 </head>
+ <!-- Spinner Start -->
+        <div id="spinner" *ngIf="isLoading" class="show w-100 vh-60 bg-white position-fixed translate-middle top-50 start-50  d-flex align-items-center justify-content-center">
+            <div class="spinner-grow text-primary" style="background-color: #81c408;" role="status"></div>
+            <div class="text-secondary mt-2">Chargement...</div>
+        </div>
+    <!-- Spinner End -->
 <!-- Fruits Shop Start-->
     <div class="container-fluid fruite py-5 mt-5">
         <div class="container py-5">

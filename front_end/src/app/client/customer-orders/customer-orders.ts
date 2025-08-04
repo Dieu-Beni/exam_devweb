@@ -16,16 +16,18 @@ export class CustomerOrders implements OnInit{
   currentPage: number = 1;
   pageSize: number = 6;
   pages: number[] = [];
+  isLoading: boolean = false;
 
   constructor(private orderSvc: OrderService, private router: Router){}
 
   ngOnInit(): void {
     this.id_user = Number(sessionStorage.getItem('user_id'));
-    console.log(this.id_user)
+    //console.log(this.id_user)
     this.getAllOrders(this.id_user);
   }
 
   getAllOrders(id: number){
+    this.isLoading = true;
     this.orderSvc.getOrder(id).subscribe({
       next: (res: any) => {
         this.orders = res.commandes;
@@ -40,7 +42,8 @@ export class CustomerOrders implements OnInit{
             console.error(err); // utile pour le debug
           }
       }
-    })
+    });
+    this.isLoading = false;
   }
 
   get totalPages(): number {

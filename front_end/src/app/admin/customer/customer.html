@@ -22,7 +22,7 @@
                                 <th scope="col">EMAIL</th>
                                 <th scope="col">ADRESSE</th>
                                 <th scope="col">ROLE</th>
-                                <th scope="col" colspan="2">ACTION</th>
+                                <th scope="col" colspan="3">ACTION</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -33,8 +33,9 @@
                                 <td> {{user.email}} </td>
                                 <td> {{user.adresse}} </td>
                                 <td> {{user.role}} </td>
-                                <td><a class="btn btn-primary" (click)="onEdit(user)">Modifier</a></td>
-                                <td><a class="btn btn-danger" (click)="onDelete(user)">Supprimer</a></td>
+                                <td><a class="my-auto btn" (click)="navToRoute(user.id)" ><i class="fas fa-wallet fa-1x text-primary"></i></a></td>
+                                <td><a class="my-auto btn" (click)="onEdit(user)" ><i class="fas fa-edit fa-1x text-success"></i></a></td>
+                                <td><a class="my-auto btn" (click)="onDelete(user)" ><i class="fas fa-times fa-1x text-danger"></i></a></td>
                             </tr>
                         </tbody>
                     </table>

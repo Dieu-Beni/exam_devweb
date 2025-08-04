@@ -159,4 +159,7 @@ export class Customer implements OnInit{
         this.pages.push(i);
       }
     }
+    navToRoute(id: number){
+      this.router.navigate(['admin/commande/', id]);
+    }
 }
