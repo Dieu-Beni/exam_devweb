@@ -12,7 +12,9 @@ export class Users {
   saveUser(user: any){
     return this.http.post(Constant.API_END_POINT + Constant.METODS.USER, user);
   }
-
+  register(user: any){
+   return this.http.post(Constant.API_END_POINT + Constant.METODS.REGISTER, user); 
+  }
   login(user: any){
     return this.http.post(Constant.API_END_POINT + Constant.METODS.LOGIN, user);
   }

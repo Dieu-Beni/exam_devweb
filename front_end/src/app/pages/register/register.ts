@@ -46,7 +46,7 @@ export class Register {
       this.user.password_confirmation = this.userForm.value.password;
       this.user.adresse = this.userForm.value.adresse;
 
-      this.userSvc.saveUser(this.user).subscribe({
+      this.userSvc.register(this.user).subscribe({
         next: (res: any) => {
           alert("Compte Cree");
           sessionStorage.setItem("user_name", this.user.nom);

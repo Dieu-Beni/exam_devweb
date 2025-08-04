@@ -5,6 +5,7 @@ export const Constant = {
         PRODUCT: 'produits/',
         USER: 'users/',
         LOGIN: 'login',
+        REGISTER: 'register/',
         CATEGORY: 'categories/',
 
         CARD: 'panier/',
