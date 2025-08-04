@@ -27,7 +27,9 @@ class CommandeController extends Controller
      */
     public function index()
     {
-        $commande = Commande::with('user')->get();
+        $commande = Commande::with('user')->orderBy('created_at', 'desc')
+                                        ->get()
+        ;
         return response()->json($commande, 200);
     }
 

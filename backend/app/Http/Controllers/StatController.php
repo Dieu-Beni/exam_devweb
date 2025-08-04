@@ -34,11 +34,18 @@ class StatController extends Controller
             ->orderByDesc('total_vendus')
             ->get();
 
+                $commandesParMois = DB::table('commandes')
+                    ->selectRaw('YEAR(created_at) as annee, MONTH(created_at) as mois, COUNT(*) as total_commandes')
+                    ->groupByRaw('YEAR(created_at), MONTH(created_at)')
+                    ->orderByRaw('YEAR(created_at), MONTH(created_at)')
+                    ->get();
+
 
     return response()->json([
         'par_mois' => $parMois,
         'par_annee' => $parAnnee,
-        'produits'=> $produitsVendus
+        'produits'=> $produitsVendus,
+        'commandes_par_mois' => $commandesParMois
     ]);
 }
 }
