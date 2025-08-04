@@ -14,6 +14,10 @@ class CategorieSeeder extends Seeder
             ['nom' => 'Électronique', 'created_at' => now(), 'updated_at' => now()],
             ['nom' => 'Alimentation', 'created_at' => now(), 'updated_at' => now()],
             ['nom' => 'Vêtements', 'created_at' => now(), 'updated_at' => now()],
+            ['nom' => 'Maison & Déco', 'created_at' => now(), 'updated_at' => now()],
+            ['nom' => 'Jeux & jouets', 'created_at' => now(), 'updated_at' => now()],
+            ['nom' => 'Mode & Accessoires', 'created_at' => now(), 'updated_at' => now()],
+            ['nom' => 'Sport', 'created_at' => now(), 'updated_at' => now()],
         ]);
     }
 }
