@@ -12,12 +12,12 @@ use App\Models\User;
 class CommandeClientNotification extends Notification
 {
     protected $commande;
-    protected $client;
+    protected $user;
 
-    public function __construct($commande, $client)
+    public function __construct($commande, $user)
     {
         $this->commande = $commande;
-        $this->client = $client;
+        $this->user = $user;
     }
 
     public function via($notifiable)
@@ -30,7 +30,7 @@ class CommandeClientNotification extends Notification
         return (new MailMessage)
             ->subject('Nouvelle commande reçue')
             ->greeting('Bonjour Admin,')
-            ->line("Le client **{$this->client->name}** a passé une commande (#{$this->commande->id}).")
+            ->line("Le client {$this->user->nom} a passé une commande (#{$this->commande->id}).")
             ->line("Montant : {$this->commande->total} FCFA")
             ->line("Adresse : {$this->commande->adresse}")
             ->line("Téléphone : {$this->commande->telephone}")

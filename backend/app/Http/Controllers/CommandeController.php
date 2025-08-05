@@ -211,7 +211,7 @@ class CommandeController extends Controller
 
             if ($commande->statut === 'validée' && $client) {
                 $client->notify(new CommandeValideeNotification($commande));
-            }else{
+            }else if($client){
                 $client->notify(new CommandeStatutNotification($commande));
             }
 
