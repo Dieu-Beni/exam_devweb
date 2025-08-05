@@ -28,7 +28,7 @@ export class ClientProducts implements OnInit{
     categoryList: any[] = [];
     items: any[] = [];
     currentPage: number = 1;
-    pageSize: number = 12;
+    pageSize: number = 9;
     pages: number[] = [];
     numberItem: number = 0;
     proCardList: any[] =[];
