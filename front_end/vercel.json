@@ -3,7 +3,7 @@
   "routes": [
     {
       "src": "/(.*)\\.(js|css|png|jpg|jpeg|gif|svg|ico|woff2?|ttf|map)$",
-      "dest": "/$1.$2"
+      "dest": "/browser/$1.$2"
     },
     { "handle": "filesystem" },
     {
