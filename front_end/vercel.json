@@ -1,9 +1,13 @@
 {
   "version": 2,
   "routes": [
+    {
+      "src": "/(.*)\\.(js|css|png|jpg|jpeg|gif|svg|ico|woff2?|ttf|map)$",
+      "dest": "/$1.$2"
+    },
     { "handle": "filesystem" },
     {
-      "src": "/(.*)",
+      "src": "/.*",
       "dest": "/browser/index.html"
     }
   ]
