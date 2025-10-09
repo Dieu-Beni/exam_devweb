@@ -1,33 +1,26 @@
 FROM php:8.2-cli
 
-# Install system dependencies
+# Installer dépendances système
 RUN apt-get update && apt-get install -y \
     unzip \
     libpq-dev \
     git \
     && docker-php-ext-install pdo pdo_pgsql
 
-# Install Composer
+# Installer Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Set working directory
+# Dossier de travail
 WORKDIR /app
 
-# Copy project
+# Copier projet
 COPY . .
 
-# Install dependencies
+# Installer dépendances Laravel
 RUN composer install --no-dev --optimize-autoloader
 
-# Generate key (if missing)
-RUN php artisan key:generate --force
-# Générer la clé + caches + migration sessions
-RUN php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache \
- 
-# Expose port
+# Exposer le port (Render injectera $PORT)
 EXPOSE 10000
 
-# Start Laravel
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=10000"]
+# Commande de démarrage
+CMD ["sh", "-c", "php artisan key:generate --force && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT:-10000}"]
