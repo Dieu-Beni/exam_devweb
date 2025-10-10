@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('paniers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_user')->constrained('users')->onDelete('cascade');
-            $table->string('statut');
+             $table->enum('statut', ['en cours', 'validé'])->default('en cours')->change();
             
             $table->timestamps();
         });
