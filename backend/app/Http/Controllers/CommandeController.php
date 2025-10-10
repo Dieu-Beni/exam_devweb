@@ -129,7 +129,7 @@ class CommandeController extends Controller
             'id_commande' => $commande->id,
             'montant'     => $commande->total,
             'date'        => now(),
-            'fichier_pdf' => 'storage/factures/' . $fileName
+            'fichier_pdf' => 'https://exam-devweb.onrender.com/storage/factures/' . $fileName
         ]);
 
         $panier = Panier::findOrFail($validated['id_panier']);
@@ -243,14 +243,14 @@ class CommandeController extends Controller
                 $facture->update([
                     'montant'     => $commande->total,
                     'date'        => now(),
-                    'fichier_pdf' => 'storage/factures/' . $fileName
+                    'fichier_pdf' => 'https://exam-devweb.onrender.com/storage/factures/' . $fileName
                 ]);
             } else {
                 \App\Models\Facture::create([
                     'id_commande' => $commande->id,
                     'montant'     => $commande->total,
                     'date'        => now(),
-                    'fichier_pdf' => 'storage/factures/' . $fileName
+                    'fichier_pdf' => 'https://exam-devweb.onrender.com/storage/factures/' . $fileName
                 ]);
             }
         }
