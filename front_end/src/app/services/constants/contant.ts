@@ -1,5 +1,5 @@
 export const Constant = {
-    API_END_POINT: 'api/api/',
+    API_END_POINT: 'api/',
     METODS: {
 
         PRODUCT: 'produits/',
