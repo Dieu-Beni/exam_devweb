@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('paiements', function (Blueprint $table) {
         $table->id();
         $table->foreignId('id_commande')->constrained('commandes')->onDelete('cascade');
-        $table->string('statut');
+        $table->enum('statut', ['non payé', 'payé'])->default('non payé')->change();
         $table->timestamps();
         });
     }

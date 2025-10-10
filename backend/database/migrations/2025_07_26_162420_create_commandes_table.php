@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('commandes', function (Blueprint $table) {
         $table->id();
         $table->foreignId('id_user')->constrained('users')->onDelete('cascade');
-        $table->enum('statut', ['en attente', 'en préparation', 'livrée'])->default('en attente')->change();
+        $table->enum('statut', ['en attente', 'expédiée', 'livrée', 'annulée'])->default('en attente')->change();
         $table->string('adresse');
         $table->integer('quantite');
         $table->decimal('total', 10, 2);
