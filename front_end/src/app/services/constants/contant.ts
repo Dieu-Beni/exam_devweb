@@ -1,5 +1,5 @@
 export const Constant = {
-    API_END_POINT: 'api/',
+    API_END_POINT: 'https://exam-devweb.onrender.com/api/',
     METODS: {
 
         PRODUCT: 'produits/',
