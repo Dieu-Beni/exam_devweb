@@ -38,7 +38,7 @@ class ProduitController extends Controller
             // Étape 2 : traitement de l'image
             if ($request->hasFile('image_url')) {
                 $path = $request->file('image_url')->store('images', 'public');
-                $validated['image_url'] = "https://exam-devweb.onrender.com/storage/" + $path; // On remplace l'image par son chemin
+               $validated['image_url'] = config('app.url') . '/storage/' . $path; // On remplace l'image par son chemin
             }
 
             // 3. Création du produit
@@ -109,7 +109,7 @@ class ProduitController extends Controller
 
             // Stocker la nouvelle image
             $path = $request->file('image_url')->store('images', 'public');
-            $validated['image_url'] ="https://exam-devweb.onrender.com/storage/" + $path; // On remplace l'image par son chemin
+            $validated['image_url'] = config('app.url') . '/storage/' . $path;
          
         }
 
