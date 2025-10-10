@@ -62,11 +62,6 @@ class CommandeController extends Controller
             'id_panier' => $validated['id_panier'],
         ]);
 
-        
-
-      
-        
-
         // Récupérer l'utilisateur (client)
         $client = $commande->user; /* relation user() à définir dans le modèle Commande
 
@@ -158,13 +153,12 @@ class CommandeController extends Controller
         if ($admins) {
             // Envoi du mail à l'admin
             foreach($admins as $admin){
-
                 $admin->notify(new CommandeClientNotification($commande, $clients));
             }
         }
 
        if ($validated['mode_paiement'] === 'en ligne') {
-       $clients->notify(new PaiementNotification($commande));
+        $clients->notify(new PaiementNotification($commande));
        }
 
 
