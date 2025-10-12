@@ -67,7 +67,7 @@
                     <div class="col-lg-4 col-md-6 col-sm-12" *ngFor="let product of getPaginatedItems()" >
                         <div class="rounded position-relative fruite-item justify-content-between" >
                             <div class="fruite-img" (click)="navigateToRoute(product.id)">
-                                <img [src]="'http://localhost:8000/storage/' + product.image_url" class="img-fluid w-100 rounded-top" style="height: 300px;" alt="">
+                                <img [src]="product.image_url" class="img-fluid w-100 rounded-top" style="height: 300px;" alt="">
                             </div>
                             <div class="text-white px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px; background-color: #FFB524;">
                                 {{product.categorie.nom}}

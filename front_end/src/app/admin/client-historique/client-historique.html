@@ -28,7 +28,7 @@
                         <td class="py-5">{{or.total}} FCFA</td>
                         <td class="py-5">{{or.created_at | date:'dd/MM/yyyy à HH:mm'}}</td>
                         <td>
-                            <a *ngIf="or.facture != null" class="my-auto btn" [href]="'http://localhost:8000/'+ or.facture.fichier_pdf" download="facture_123.pdf" target="_blank" rel="noopener noreferrer">
+                            <a *ngIf="or.facture != null" class="my-auto btn" [href]="or.facture.fichier_pdf" download="facture_123.pdf" target="_blank" rel="noopener noreferrer">
                                 <i class="fas fa-file fa-1x text-primary"></i>
                             </a>
                         </td>
